@@ -1,0 +1,37 @@
+---
+import type { GetStaticPaths } from "astro";
+import { render, type CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPublishedNews } from "../../lib/news";
+import { formatDate } from "../../lib/format";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const posts = await getPublishedNews();
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+};
+
+interface Props {
+  post: CollectionEntry<"news">;
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <article class="mx-auto max-w-3xl px-6 py-14">
+    <p class="text-sm text-ink/70">
+      <time datetime={post.data.pubDate.toISOString()}
+        >{formatDate(post.data.pubDate)}</time
+      >
+    </p>
+    <h1 class="mt-1 text-3xl font-bold text-brand-dark">{post.data.title}</h1>
+    <div class="post-body mt-6">
+      <Content />
+    </div>
+    <a
+      class="mt-10 inline-block text-sm font-medium text-brand hover:underline"
+      href="/news">← All news</a
+    >
+  </article>
+</BaseLayout>

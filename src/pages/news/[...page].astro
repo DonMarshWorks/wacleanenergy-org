@@ -1,0 +1,61 @@
+---
+import type { GetStaticPaths, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import NewsCard from "../../components/NewsCard.astro";
+import { getPublishedNews } from "../../lib/news";
+
+export const getStaticPaths: GetStaticPaths = async ({ paginate }) => {
+  const posts = await getPublishedNews();
+  return paginate(posts, { pageSize: 10 });
+};
+
+interface Props {
+  page: Page<CollectionEntry<"news">>;
+}
+
+const { page } = Astro.props;
+---
+
+<BaseLayout
+  title="News"
+  description="News and updates from the Washington Clean Energy Coalition."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="text-3xl font-bold text-brand-dark">News &amp; updates</h1>
+    {
+      page.data.length === 0 ? (
+        <p class="mt-6 leading-relaxed">No posts yet — check back soon.</p>
+      ) : (
+        <div class="mt-4">
+          {page.data.map((post) => (
+            <NewsCard post={post} />
+          ))}
+        </div>
+      )
+    }
+    {
+      (page.url.prev || page.url.next) && (
+        <nav
+          class="mt-8 flex justify-between text-sm font-medium text-brand"
+          aria-label="Pagination"
+        >
+          {page.url.prev ? (
+            <a class="hover:underline" href={page.url.prev}>
+              ← Newer posts
+            </a>
+          ) : (
+            <span />
+          )}
+          {page.url.next ? (
+            <a class="hover:underline" href={page.url.next}>
+              Older posts →
+            </a>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )
+    }
+  </section>
+</BaseLayout>

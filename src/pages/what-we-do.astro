@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+// Draft copy — pending coalition review. See docs/plans/content-migration.md Q3.
+
+const activities = [
+  {
+    title: "Stakeholder advisory groups",
+    body: "We participate in the advisory groups that shape utility resource and clean-energy plans, bringing a public-interest voice to rooms usually dominated by industry.",
+  },
+  {
+    title: "Testimony to regulators",
+    body: "We submit comments and testimony to the Washington Utilities and Transportation Commission on rate cases, integrated resource plans, and gas-expansion proposals.",
+  },
+  {
+    title: "Coordinating with partners",
+    body: "We work alongside allied organizations so that clean-energy advocates speak with a louder, better-informed, unified voice.",
+  },
+];
+---
+
+<BaseLayout
+  title="What We Do"
+  description="How the Washington Clean Energy Coalition advances the state's clean energy transition."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="text-3xl font-bold text-brand-dark">What we do</h1>
+    <p class="mt-4 leading-relaxed">
+      We are a small, all-volunteer group with an outsized focus: making sure
+      Washington's largest utility follows through on the state's clean energy
+      commitments. Our work happens where utility decisions are actually made.
+    </p>
+    <div class="mt-8 space-y-8">
+      {
+        activities.map((a) => (
+          <div>
+            <h2 class="text-xl font-semibold text-brand-dark">{a.title}</h2>
+            <p class="mt-2 leading-relaxed">{a.body}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

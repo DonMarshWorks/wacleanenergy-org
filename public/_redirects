@@ -1,0 +1,2 @@
+# Cloudflare Pages redirects. One per line: /from /to STATUS
+# Example: /old-page /new-page 301

@@ -1,0 +1,9 @@
+// Merge into wrangler.jsonc.
+{
+  "kv_namespaces": [
+    {
+      "binding": "GOOGLE_AUTH_KV",
+      "id": "REPLACE_WITH_KV_ID"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+// Merge into wrangler.jsonc. If r2_buckets already exists, append to it.
+{
+  "r2_buckets": [
+    {
+      "binding": "ASSETS_BUCKET",
+      "bucket_name": "REPLACE_WITH_BUCKET_NAME"
+    }
+  ]
+}

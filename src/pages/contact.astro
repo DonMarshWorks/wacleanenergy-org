@@ -1,0 +1,26 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const email = "info@wacleanenergy.org";
+---
+
+<BaseLayout
+  title="Contact"
+  description="Get in touch with the Washington Clean Energy Coalition."
+>
+  <section class="mx-auto max-w-3xl px-6 py-14">
+    <h1 class="text-3xl font-bold text-brand-dark">Contact us</h1>
+    <p class="mt-4 leading-relaxed">
+      We are an all-volunteer group, and we would love to hear from you —
+      whether you want to get involved, ask a question, or share information
+      relevant to our work.
+    </p>
+    <p class="mt-6 text-lg">
+      Email us at{" "}
+      <a
+        class="font-semibold text-brand-dark underline underline-offset-4 hover:text-brand"
+        href={`mailto:${email}`}>{email}</a
+      >
+    </p>
+  </section>
+</BaseLayout>

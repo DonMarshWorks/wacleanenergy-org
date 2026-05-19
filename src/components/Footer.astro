@@ -1,0 +1,21 @@
+---
+const year = new Date().getFullYear();
+const email = "info@wacleanenergy.org";
+---
+
+<footer class="mt-16 bg-brand-dark text-white">
+  <div
+    class="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-8 text-sm sm:flex-row sm:items-center sm:justify-between"
+  >
+    <p>
+      Contact:{" "}
+      <a
+        class="underline underline-offset-4 hover:text-surface"
+        href={`mailto:${email}`}>{email}</a
+      >
+    </p>
+    <p class="text-white/70">
+      © {year} Washington Clean Energy Coalition · An all-volunteer nonprofit
+    </p>
+  </div>
+</footer>

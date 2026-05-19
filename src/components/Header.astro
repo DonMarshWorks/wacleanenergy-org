@@ -1,0 +1,58 @@
+---
+import { Image } from "astro:assets";
+import logo from "../assets/wcec-logo.png";
+
+const nav = [
+  { href: "/", label: "Home" },
+  { href: "/what-we-do", label: "What We Do" },
+  { href: "/partners", label: "Partners" },
+  { href: "/accomplishments", label: "Accomplishments" },
+  { href: "/news", label: "News" },
+  { href: "/contact", label: "Contact" },
+];
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isActive = (href: string) =>
+  href === "/" ? path === "/" : path === href || path.startsWith(href + "/");
+---
+
+<header class="border-b border-brand/15">
+  <div
+    class="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 py-3 sm:flex-row sm:justify-between"
+  >
+    <a href="/">
+      <Image
+        src={logo}
+        alt="Washington Clean Energy Coalition"
+        width={240}
+        densities={[1, 2]}
+        loading="eager"
+      />
+    </a>
+    <nav aria-label="Primary">
+      <ul
+        class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm font-medium"
+      >
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? "page" : undefined}
+                class:list={[
+                  "rounded px-1 py-1 transition-colors hover:text-brand",
+                  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
+                  isActive(item.href)
+                    ? "text-brand-dark underline underline-offset-8"
+                    : "text-ink",
+                ]}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

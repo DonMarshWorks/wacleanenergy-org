@@ -1,0 +1,6 @@
+{
+  // Cloudflare Pages — fully static deploy. See docs/plans/content-migration.md.
+  "name": "wacleanenergy-org",
+  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2026-02-20"
+}

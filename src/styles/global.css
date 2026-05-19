@@ -1,0 +1,63 @@
+@import "tailwindcss";
+
+/* Brand tokens — inferred from the WCEC logo (teal Washington State with
+ * sun, wind turbine, waves on cream). Approximate; pending coalition
+ * confirmation of exact values. See docs/plans/content-migration.md.
+ *
+ * Tailwind v4 is CSS-first: these generate utilities like bg-brand,
+ * text-brand-dark, text-ink, bg-surface. */
+@theme {
+  --color-brand: #3f7d8c;
+  --color-brand-dark: #184a5d;
+  --color-ink: #54534c;
+  --color-surface: #fafcef;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Typography for rendered Markdown news posts. Applied via a global class
+ * (not a Tailwind utility) so it reaches the HTML emitted by <Content />,
+ * avoiding the @tailwindcss/typography dependency. */
+.post-body {
+  line-height: 1.7;
+}
+.post-body > * + * {
+  margin-top: 1rem;
+}
+.post-body h2 {
+  margin-top: 2rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+.post-body h3 {
+  margin-top: 1.5rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5rem;
+}
+.post-body ul {
+  list-style: disc;
+}
+.post-body ol {
+  list-style: decimal;
+}
+.post-body li + li {
+  margin-top: 0.25rem;
+}
+.post-body a {
+  color: var(--color-brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.post-body blockquote {
+  border-left: 3px solid var(--color-brand);
+  padding-left: 1rem;
+  font-style: italic;
+}
