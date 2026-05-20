@@ -86,11 +86,14 @@ not yet on the real `wacleanenergy.org` domain.
 - **GitHub:** https://github.com/DonMarshWorks/wacleanenergy-org (public)
 - **Cloudflare Pages project:** `wacleanenergy-org`, production branch
   `main`, served at https://wacleanenergy-org.pages.dev.
-- **Deploy mechanism:** `npm run deploy` (manual; runs `astro build`
-  then `wrangler pages deploy dist/`). Auto-deploy on push is **not
-  yet wired up** — connect the GitHub repo in the Cloudflare dashboard
-  (Pages → project → Settings → Builds & deployments → Connect Git) to
-  enable it.
+- **Deploy mechanism:** **auto-deploy on push to `main`** via
+  Cloudflare Pages' Git integration (wired up 2026-05-20). PR branches
+  get free preview deploys. The original Direct Upload project was
+  deleted and recreated as a Git-integrated project from the
+  "Create application → Pages → Import an existing Git repository"
+  flow, since the unified UI does not expose a Git-connect button on
+  existing Direct Upload projects. `npm run deploy` still works as a
+  manual fallback.
 - **Custom domain:** not attached — `wacleanenergy.org` still serves
   the old WordPress site. Attaching it is part of the GoDaddy migration
   plan's Phase 2B and depends on Phase 0 first.
@@ -109,12 +112,8 @@ not yet on the real `wacleanenergy.org` domain.
    partners list, the accomplishments record, confirmed brand colours,
    and (ideally) a transparent-background logo for the header.
    Mechanical edits to existing files.
-3. **Connect GitHub → Pages for auto-deploy** — a Cloudflare dashboard
-   step (Pages → project → Settings → Builds & deployments → Connect
-   Git). After connecting, every push to `main` rebuilds and
-   redeploys automatically.
-4. **Design polish** — typography choices, home-page hero treatment,
+3. **Design polish** — typography choices, home-page hero treatment,
    illustrative imagery (e.g. recreating the PSE-vs-WA energy-mix
    visual from the old site), once Stage-3-reviewed.
-5. **Transfer GitHub repo and Cloudflare account to coalition control**
+4. **Transfer GitHub repo and Cloudflare account to coalition control**
    — currently both on personal accounts.
