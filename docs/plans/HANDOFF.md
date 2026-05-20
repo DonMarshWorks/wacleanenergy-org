@@ -1,14 +1,17 @@
 # Implementation Hand-off
 
-**Last updated:** 2026-05-19
+**Last updated:** 2026-05-20
 
-**Outgoing session:** Recovered from a lost prior session, then
-produced two implementation plans and built the site. The
-content-migration plan was written, Stage-3-reviewed twice,
-implemented, and Stage-5-reviewed. The GoDaddy migration plan was
-written and Stage-3-reviewed four times but not implemented — it is
-blocked on Phase 0 facts only the coalition can supply. One initial
-commit lands the entire result.
+**Outgoing session:** Recovered from a lost prior session, produced
+two implementation plans, built the site, and pushed it live on
+Cloudflare Pages. The content-migration plan was written,
+Stage-3-reviewed twice, implemented, and Stage-5-reviewed. The
+GoDaddy migration plan was written and Stage-3-reviewed four times
+but not implemented — it is blocked on Phase 0 facts only the
+coalition can supply. After the initial commit landed, the GitHub
+remote and Cloudflare Pages project were set up and the site
+deployed; it is live at https://wacleanenergy-org.pages.dev but
+not yet on the real `wacleanenergy.org` domain.
 
 ---
 
@@ -75,8 +78,25 @@ commit lands the entire result.
 ## Recent commits
 
 ```
-(initial commit — first commit of this repo)
+3e8ace6  Initial site rebuild + DNS/email migration plan  (2026-05-19)
 ```
+
+## Deployment
+
+- **GitHub:** https://github.com/DonMarshWorks/wacleanenergy-org (public)
+- **Cloudflare Pages project:** `wacleanenergy-org`, production branch
+  `main`, served at https://wacleanenergy-org.pages.dev.
+- **Deploy mechanism:** `npm run deploy` (manual; runs `astro build`
+  then `wrangler pages deploy dist/`). Auto-deploy on push is **not
+  yet wired up** — connect the GitHub repo in the Cloudflare dashboard
+  (Pages → project → Settings → Builds & deployments → Connect Git) to
+  enable it.
+- **Custom domain:** not attached — `wacleanenergy.org` still serves
+  the old WordPress site. Attaching it is part of the GoDaddy migration
+  plan's Phase 2B and depends on Phase 0 first.
+- Both GitHub and Cloudflare accounts are currently personal
+  (`DonMarshWorks` / `don.m.marsh@gmail.com`); long-term, transfer to
+  coalition-controlled accounts is recommended.
 
 ## Incoming session options
 
@@ -89,9 +109,12 @@ commit lands the entire result.
    partners list, the accomplishments record, confirmed brand colours,
    and (ideally) a transparent-background logo for the header.
    Mechanical edits to existing files.
-3. **Set up a remote and a Cloudflare Pages project** — currently no
-   Git remote and no Pages project; the build runs but is not yet
-   deployed anywhere.
+3. **Connect GitHub → Pages for auto-deploy** — a Cloudflare dashboard
+   step (Pages → project → Settings → Builds & deployments → Connect
+   Git). After connecting, every push to `main` rebuilds and
+   redeploys automatically.
 4. **Design polish** — typography choices, home-page hero treatment,
    illustrative imagery (e.g. recreating the PSE-vs-WA energy-mix
    visual from the old site), once Stage-3-reviewed.
+5. **Transfer GitHub repo and Cloudflare account to coalition control**
+   — currently both on personal accounts.

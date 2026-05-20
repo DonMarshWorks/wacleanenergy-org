@@ -6,6 +6,11 @@ nonprofit working to accelerate Washington State's clean energy transition.
 Built with [Astro 5](https://astro.build/) and hosted on
 [Cloudflare Pages](https://pages.cloudflare.com/). Managed with Claude Code.
 
+- **Live (preview):** https://wacleanenergy-org.pages.dev
+- **Production domain (pending):** https://wacleanenergy.org — DNS migration
+  is planned in [`docs/plans/godaddy-migration.md`](docs/plans/godaddy-migration.md)
+  and not yet executed.
+
 Migrated from a WordPress.com site in 2026.
 
 ## Stack
