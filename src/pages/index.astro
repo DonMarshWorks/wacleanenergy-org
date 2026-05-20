@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { Content } from "../content/pages/home.md";
 ---
 
 <BaseLayout
@@ -14,24 +15,9 @@ import BaseLayout from "../layouts/BaseLayout.astro";
       Washington volunteers engage utilities, regulators, and legislators to get
       clean energy right.
     </p>
-    <p class="mt-8 text-lg leading-relaxed">
-      Washington's clean energy aspirations have been amazing. We passed
-      landmark legislation like the Climate Commitment Act and Clean Energy
-      Transformation Act. Big corporations like Microsoft and Amazon announced
-      ambitious sustainability plans. The cost of clean technology kept
-      plummeting.
-    </p>
-    <p class="mt-5 leading-relaxed">
-      Now those commitments are eroding. Data centers demand huge quantities of
-      electricity. Corporations are reaching for expensive nuclear and gas to
-      fill the gap, and consultants are claiming the Pacific Northwest has no
-      choice but to burn more fossil fuels.
-    </p>
-    <p class="mt-5 leading-relaxed">
-      The Washington Clean Energy Coalition rejects that. We're all volunteers,
-      advocating for solutions that cost less, keep the grid reliable, and
-      eliminate pollution.
-    </p>
+    <div class="post-body mt-8">
+      <Content />
+    </div>
     <div class="mt-8 flex flex-wrap gap-4">
       <a
         href="/what-we-do"
