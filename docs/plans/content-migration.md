@@ -15,9 +15,9 @@ placeholder pending coalition input._
 
 Rebuild `wacleanenergy.org` fresh as an Astro 5 site in this repo:
 the coalition's informational pages plus a new news/updates section.
-This plan produces the deployable site that the GoDaddy migration's
-Phase 1 (`docs/plans/godaddy-migration.md`) needs before it can point
-the domain at Cloudflare Pages.
+This plan produces the deployable site that the DNS/email migration's
+Phase 1 (`docs/plans/dns-email-migration.md`) needs before it can
+point the domain at Cloudflare Pages.
 
 ## Background / context
 
@@ -295,7 +295,7 @@ sort order). Presentational `.astro` pages are verified by
 ## Out of scope
 
 - The DNS, email, and registrar migration — separate plan
-  (`docs/plans/godaddy-migration.md`).
+  (`docs/plans/dns-email-migration.md`).
 - A contact form and any mail-sending backend (decided against —
   contact is a published address).
 - A content management system / visual editor — content is managed by

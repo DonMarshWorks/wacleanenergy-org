@@ -8,14 +8,14 @@ Built with [Astro 5](https://astro.build/) and hosted on
 
 - **Live (preview):** https://wacleanenergy-org.pages.dev
 - **Production domain (pending):** https://wacleanenergy.org — DNS migration
-  is planned in [`docs/plans/godaddy-migration.md`](docs/plans/godaddy-migration.md)
+  is planned in [`docs/plans/dns-email-migration.md`](docs/plans/dns-email-migration.md)
   and not yet executed.
 
 Migrated from a WordPress.com site in 2026.
 
 ## Stack
 
-- Astro 5 with the Cloudflare adapter (SSR on Workers)
+- Astro 5 (fully static output — no SSR adapter)
 - Tailwind v4 (CSS-first config in `src/styles/global.css`)
 - TypeScript (strict) + Prettier + Vitest
 - Wrangler for deploys
