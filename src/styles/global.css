@@ -10,7 +10,8 @@
   --color-brand: #3f7d8c;
   --color-brand-dark: #184a5d;
   --color-ink: #54534c;
-  --color-surface: #fafcef;
+  --color-surface: #fcfdf7;
+  --color-warn: #c0392b;
 }
 
 html {

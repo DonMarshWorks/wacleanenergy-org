@@ -1,0 +1,159 @@
+---
+/**
+ * Static SVG line chart: Washington's GHG emissions vs. its statutory
+ * limits, 1990–2050.
+ *
+ * Data source: Washington State Dept. of Ecology, Statewide Greenhouse
+ * Gas Emissions Inventory (1990–2022, released April 2026). Statutory
+ * limits per RCW 70A.45.020, computed against a 1990 baseline of
+ * ≈90.5 MMT CO₂e.
+ *
+ * Coordinate system (viewBox 0 0 600 240):
+ *   X: years 1990..2050 → x = 40..584 (plot width 544)
+ *   Y: 0..115 MMT CO₂e → y = 208..16 (plot height 192)
+ *   formula: xPx(year) = 40 + (year - 1990) / 60 * 544
+ *            yPx(value) = 208 - value / 115 * 192
+ *
+ * Layout: single column, capped to max-w-xl and centered. The figure
+ * stays narrow on wide screens (avoiding an over-stretched 2.5:1 chart)
+ * while still filling the viewport on phones.
+ */
+---
+
+<figure
+  class="mx-auto mt-8 max-w-lg rounded-lg border border-brand/15 bg-white p-4 sm:p-6"
+>
+  <figcaption class="text-base font-medium text-brand-dark">
+    Washington's emissions vs. its statutory limit (MMT CO₂e)
+  </figcaption>
+
+  <svg
+    viewBox="0 0 600 240"
+    class="mt-3 h-auto w-full"
+    role="img"
+    aria-label="Line chart of Washington greenhouse gas emissions from 1990 to 2050. Actual emissions: 90.5 MMT in 1990, peaked at 108 in 2000, fell to 89 in 2020, rose back to 96 in 2021–2022. Statutory limit per RCW 70A.45.020: held at the 1990 level (90.5) through 2020, then drops to 50 MMT in 2030, 27 in 2040, and 5 in 2050. Recent actual emissions sit well above the trajectory the law requires."
+  >
+    <!-- Subtle horizontal grid -->
+    <line
+      x1="40"
+      x2="584"
+      y1="41"
+      y2="41"
+      stroke="#1c2a26"
+      stroke-opacity="0.08"></line>
+    <line
+      x1="40"
+      x2="584"
+      y1="124"
+      y2="124"
+      stroke="#1c2a26"
+      stroke-opacity="0.08"></line>
+    <!-- X axis baseline -->
+    <line
+      x1="40"
+      x2="584"
+      y1="208"
+      y2="208"
+      stroke="#1c2a26"
+      stroke-opacity="0.3"></line>
+
+    <!-- Y axis tick labels -->
+    <text x="34" y="44" text-anchor="end" font-size="14" fill="#54534c"
+      >100</text
+    >
+    <text x="34" y="127" text-anchor="end" font-size="14" fill="#54534c"
+      >50</text
+    >
+    <text x="34" y="211" text-anchor="end" font-size="14" fill="#54534c">0</text
+    >
+
+    <!-- X axis tick labels (each decade) -->
+    <text x="40" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >1990</text
+    >
+    <text x="131" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2000</text
+    >
+    <text x="221" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2010</text
+    >
+    <text x="312" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2020</text
+    >
+    <text x="403" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2030</text
+    >
+    <text x="493" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2040</text
+    >
+    <text x="584" y="228" text-anchor="middle" font-size="14" fill="#54534c"
+      >2050</text
+    >
+
+    <!-- Statutory limit (dashed, brand teal) — what WCEC advocates for -->
+    <polyline
+      fill="none"
+      stroke="var(--color-brand)"
+      stroke-width="3.5"
+      stroke-dasharray="6 4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      points="40,57 312,57 403,125 493,163 584,200"></polyline>
+    <circle cx="40" cy="57" r="4" fill="var(--color-brand)"></circle>
+    <circle cx="312" cy="57" r="4" fill="var(--color-brand)"></circle>
+    <circle cx="403" cy="125" r="4" fill="var(--color-brand)"></circle>
+    <circle cx="493" cy="163" r="4" fill="var(--color-brand)"></circle>
+    <circle cx="584" cy="200" r="4" fill="var(--color-brand)"></circle>
+
+    <!-- Actual emissions (solid, warn red) -->
+    <polyline
+      fill="none"
+      stroke="var(--color-warn)"
+      stroke-width="3.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      points="40,57 131,28 312,59 321,47 330,48"></polyline>
+    <circle cx="40" cy="57" r="5" fill="var(--color-warn)"></circle>
+    <circle cx="131" cy="28" r="5" fill="var(--color-warn)"></circle>
+    <circle cx="312" cy="59" r="5" fill="var(--color-warn)"></circle>
+    <circle cx="321" cy="47" r="5" fill="var(--color-warn)"></circle>
+    <circle cx="330" cy="48" r="5" fill="var(--color-warn)"></circle>
+  </svg>
+
+  <div
+    class="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-ink/70"
+  >
+    <span class="flex items-center gap-1.5">
+      <svg width="20" height="3" aria-hidden="true">
+        <line
+          x1="0"
+          y1="1.5"
+          x2="20"
+          y2="1.5"
+          stroke="var(--color-warn)"
+          stroke-width="2.5"
+          stroke-linecap="round"></line>
+      </svg>
+      Actual emissions
+    </span>
+    <span class="flex items-center gap-1.5">
+      <svg width="20" height="3" aria-hidden="true">
+        <line
+          x1="0"
+          y1="1.5"
+          x2="20"
+          y2="1.5"
+          stroke="var(--color-brand)"
+          stroke-width="2.5"
+          stroke-dasharray="4 3"
+          stroke-linecap="round"></line>
+      </svg>
+      Statutory limit
+    </span>
+  </div>
+
+  <p class="mt-3 text-xs text-ink/60">
+    Source: Washington State Dept. of Ecology, Statewide GHG Inventory;
+    statutory limits per RCW 70A.45.020.
+  </p>
+</figure>

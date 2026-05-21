@@ -1,13 +1,42 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { Content } from "../content/pages/home.md";
+import { Content } from "../content/pages/home.mdx";
 ---
 
 <BaseLayout
   title="Washington Clean Energy Coalition"
   description="Washington volunteers engaging utilities, regulators, and legislators for clean energy that costs less, stays reliable, and eliminates pollution."
 >
-  <section class="mx-auto max-w-3xl px-6 py-16">
+  <section class="relative mx-auto max-w-3xl px-6 py-16">
+    {
+      /* "New dawn" — a pale half-sun rising from the header horizon, with
+        three subtle sunray streaks fanning out behind the nav toward the
+        viewport's right edge.
+
+        The rays are a single CSS conic-gradient on an absolutely-positioned
+        div. The div is anchored so its left-center sits at the half-sun's
+        x-position (calc derived from max-w-3xl section centering), letting
+        the rays appear to emanate from the sun. `-z-10` puts the rays below
+        the header in z-order, so nav text reads in front of them.
+
+        Hidden on phone widths where the stacked header has no clean room
+        for a sky decoration. Rays hidden until md+ so the calc that
+        depends on max-w-3xl centering holds. */
+    }
+    <div
+      class="pointer-events-none absolute -top-20 -z-10 hidden h-40 md:block"
+      style="right: calc(384px - 50vw); width: calc(50vw - 312px); background: conic-gradient(from 78deg at 0% 50%, transparent 0deg, rgba(244, 224, 158, 0.4) 3deg, transparent 6deg, transparent 12deg, rgba(244, 224, 158, 0.4) 15deg, transparent 18deg, transparent 24deg, rgba(244, 224, 158, 0.4) 27deg, transparent 30deg, transparent 360deg);"
+      aria-hidden="true"
+    >
+    </div>
+    <svg
+      viewBox="0 0 100 50"
+      class="pointer-events-none absolute -top-10 right-8 hidden h-10 w-20 sm:block"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M 0 50 A 50 50 0 0 0 100 50 Z" fill="#f4e09e"></path>
+    </svg>
     <h1 class="text-4xl font-bold tracking-tight text-brand-dark sm:text-5xl">
       Let's get this transition right.
     </h1>
