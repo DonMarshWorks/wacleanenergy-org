@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-// Placeholder copy — pending coalition input.
+import { Image } from "astro:assets";
+import { Content } from "../content/pages/who-we-are.md";
+import chairPhoto from "../assets/people/don-marsh.jpg";
 ---
 
 <BaseLayout
@@ -9,16 +11,31 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 >
   <section class="mx-auto max-w-3xl px-6 py-14">
     <h1 class="text-3xl font-bold text-brand-dark">Who we are</h1>
-    <p class="mt-4 leading-relaxed">
-      The Washington Clean Energy Coalition is an all-volunteer group of
-      Washingtonians who care about consumers, the environment, and future
-      generations.
-    </p>
-    <p class="mt-4 leading-relaxed text-ink/70">
-      <em
-        >This page is a placeholder. The coalition's full description — history,
-        mission, members — will go here.</em
+    <!-- flow-root on the wrapper contains the floated figure so it
+         can't overflow into the CTA below. -->
+    <div class="post-body mt-4 flow-root">
+      <figure
+        class="mx-auto my-6 w-full max-w-[225px] sm:float-right sm:mx-0 sm:my-0 sm:mb-4 sm:ml-6"
       >
-    </p>
+        <Image
+          src={chairPhoto}
+          alt="Don Marsh"
+          width={225}
+          densities={[1, 2]}
+          class="w-full rounded-md"
+        />
+        <figcaption class="mt-2 text-center text-sm text-ink/70">
+          Don Marsh, Chair
+        </figcaption>
+      </figure>
+      <Content />
+    </div>
+    <div class="mt-10">
+      <a
+        href="/what-we-do"
+        class="inline-block rounded-md bg-brand-dark px-5 py-2.5 font-medium text-white transition-colors hover:bg-brand"
+        >What we do →</a
+      >
+    </div>
   </section>
 </BaseLayout>
