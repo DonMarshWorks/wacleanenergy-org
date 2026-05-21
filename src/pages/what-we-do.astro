@@ -1,6 +1,51 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { Content } from "../content/pages/what-we-do.md";
+import sierraClub from "../assets/partners/sierra-club.svg";
+import thirdAct from "../assets/partners/third-act.svg";
+import nwec from "../assets/partners/nwec.jpg";
+import seattle350 from "../assets/partners/350-seattle.png";
+import eastside350 from "../assets/partners/350-eastside.png";
+import cab from "../assets/partners/climate-action-bainbridge.jpg";
+import vashon from "../assets/partners/vashon.jpg";
+
+const partners = [
+  {
+    name: "Sierra Club",
+    url: "https://www.sierraclub.org/washington",
+    logo: sierraClub,
+  },
+  {
+    name: "Third Act Washington",
+    url: "https://thirdact.org/washington/",
+    logo: thirdAct,
+  },
+  {
+    name: "Northwest Energy Coalition",
+    url: "https://nwenergy.org/",
+    logo: nwec,
+  },
+  {
+    name: "350 Seattle",
+    url: "https://350seattle.org/",
+    logo: seattle350,
+  },
+  {
+    name: "350 Eastside",
+    url: "https://world.350.org/eastside/?r=US&c=NA",
+    logo: eastside350,
+  },
+  {
+    name: "Climate Action Bainbridge",
+    url: "https://www.sustainablebainbridge.org/programs/climate-action-bainbridge/",
+    logo: cab,
+  },
+  {
+    name: "Vashon Climate Action Team",
+    url: "https://www.facebook.com/VashonClimateAction/",
+    logo: vashon,
+  },
+];
 ---
 
 <BaseLayout
@@ -12,5 +57,38 @@ import { Content } from "../content/pages/what-we-do.md";
     <div class="post-body mt-4">
       <Content />
     </div>
+
+    <ul class="mt-6 grid list-none grid-cols-2 gap-4 p-0 sm:grid-cols-3">
+      {
+        partners.map((p) => (
+          <li>
+            <a
+              href={p.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="flex h-full flex-col items-center justify-between gap-3 rounded-lg border border-brand/15 bg-white p-4 transition-colors hover:border-brand hover:shadow-sm"
+            >
+              <img
+                src={p.logo.src}
+                alt={p.name}
+                class="h-16 w-auto max-w-full object-contain"
+              />
+              <span class="text-center text-sm font-medium text-ink">
+                {p.name}
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="mt-8 text-center italic text-ink/70">
+      Want to partner with us?{" "}
+      <a
+        href="/contact"
+        class="font-medium not-italic text-brand underline underline-offset-2 hover:text-brand-dark"
+        >Get in touch</a
+      >.
+    </p>
   </section>
 </BaseLayout>
