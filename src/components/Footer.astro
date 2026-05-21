@@ -1,21 +1,74 @@
 ---
 const year = new Date().getFullYear();
 const email = "info@wacleanenergy.org";
+
+// Mirrors Header's primary nav. Duplicated rather than imported because the
+// nav list is short and rarely changes; lifting it out would add a module
+// for almost no gain.
+const nav = [
+  { href: "/", label: "Home" },
+  { href: "/who-we-are", label: "Who we are" },
+  { href: "/what-we-do", label: "What we do" },
+  { href: "/news", label: "News" },
+  { href: "/contact", label: "Contact" },
+];
 ---
 
 <footer class="mt-16 bg-brand-dark text-white">
-  <div
-    class="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-8 text-sm sm:flex-row sm:items-center sm:justify-between"
-  >
-    <p>
-      Contact:{" "}
+  <div class="mx-auto max-w-5xl px-6 py-8 text-sm">
+    <div
+      class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <nav aria-label="Footer">
+        <ul
+          class="flex flex-wrap justify-center gap-x-5 gap-y-2 sm:justify-start"
+        >
+          {
+            nav.map((item) => (
+              <li>
+                <a
+                  href={item.href}
+                  class="text-white/90 underline-offset-4 hover:text-white hover:underline"
+                >
+                  {item.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
       <a
-        class="underline underline-offset-4 hover:text-surface"
-        href={`mailto:${email}`}>{email}</a
+        href="/rss.xml"
+        class="inline-flex items-center justify-center gap-2 text-white/90 underline-offset-4 hover:text-white hover:underline"
       >
-    </p>
-    <p class="text-white/70">
-      © {year} Washington Clean Energy Coalition · An all-volunteer nonprofit
-    </p>
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path
+            d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18A2.18 2.18 0 0 1 6.18 20 2.18 2.18 0 0 1 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1Z"
+          ></path>
+        </svg>
+        RSS feed
+      </a>
+    </div>
+    <div
+      class="mt-5 flex flex-col gap-2 border-t border-white/15 pt-5 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        Contact:{" "}
+        <a
+          class="underline underline-offset-4 hover:text-surface"
+          href={`mailto:${email}`}>{email}</a
+        >
+      </p>
+      <p class="text-white/70">
+        © {year} Washington Clean Energy Coalition · An all-volunteer nonprofit
+      </p>
+    </div>
   </div>
 </footer>

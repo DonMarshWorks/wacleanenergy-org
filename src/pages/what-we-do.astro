@@ -68,11 +68,17 @@ const partners = [
               rel="noopener noreferrer"
               class="flex h-full flex-col items-center justify-between gap-3 rounded-lg border border-brand/15 bg-white p-4 transition-colors hover:border-brand hover:shadow-sm"
             >
-              <img
-                src={p.logo.src}
-                alt={p.name}
-                class="h-16 w-auto max-w-full object-contain"
-              />
+              {/* Fixed-size flex lane gives every logo the same vertical
+                  envelope; max-h / max-w on the <img> add breathing room
+                  and bound the wider wordmarks so they don't dwarf the
+                  taller round-mark logos. */}
+              <div class="flex h-20 w-full items-center justify-center">
+                <img
+                  src={p.logo.src}
+                  alt={p.name}
+                  class="max-h-16 max-w-[80%] object-contain"
+                />
+              </div>
               <span class="text-center text-sm font-medium text-ink">
                 {p.name}
               </span>
