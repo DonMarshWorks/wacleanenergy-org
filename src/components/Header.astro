@@ -15,7 +15,31 @@ const isActive = (href: string) =>
   href === "/" ? path === "/" : path === href || path.startsWith(href + "/");
 ---
 
-<header class="border-b border-brand/15">
+<header class="relative isolate border-b border-brand/15">
+  {
+    /* "New dawn" — a warm half-sun resting flat-side-down on the header
+       dividing line, with three rays at asymmetric angles fanning up behind
+       the nav. Rays are long rotated rectangles (not tapered triangles) with
+       a linear-gradient fade, so they keep visual width along their length
+       and bleed off the edges of the viewport instead of pinching to a point.
+       Sun and rays share a single pivot at the bottom-center of the sun;
+       the wrapper is `overflow-hidden` so anything extending past the
+       viewport bounds gets clipped naturally. `isolate` on the header makes
+       the `-z-10` decoration paint behind the nav within one stacking
+       context. Hidden below sm where the stacked-column header has no
+       horizon to rise from. */
+  }
+  <div
+    class="dawn pointer-events-none absolute inset-x-0 bottom-0 -z-10 hidden h-[220px] overflow-hidden sm:block"
+    aria-hidden="true"
+  >
+    <div class="relative mx-auto h-full max-w-5xl">
+      <span class="dawn-ray dawn-ray--left" />
+      <span class="dawn-ray dawn-ray--center" />
+      <span class="dawn-ray dawn-ray--right" />
+      <span class="dawn-sun" />
+    </div>
+  </div>
   <div
     class="mx-auto flex max-w-5xl flex-col items-center gap-3 px-6 py-3 sm:flex-row sm:justify-between"
   >
@@ -55,3 +79,72 @@ const isActive = (href: string) =>
     </nav>
   </div>
 </header>
+
+<style>
+  .dawn {
+    /* Sun's anchor point: distance from the right edge of the centered
+       max-w-5xl content column. Smaller value moves the sun further right. */
+    --sun-anchor-right: 170px;
+    --sun-rgb: 255, 240, 190;
+    /* Pure white — opacity blending with the cream surface gives the rays
+       a "between cream and white" appearance, but with real contrast.
+       A near-white source colour (e.g. #fdfefb) is too close to the surface
+       to read at any opacity. */
+    --ray-rgb: 255, 249, 220;
+  }
+  .dawn-sun,
+  .dawn-ray {
+    position: absolute;
+    bottom: 0;
+    right: var(--sun-anchor-right);
+  }
+  .dawn-sun {
+    width: 96px;
+    height: 48px;
+    border-radius: 48px 48px 0 0;
+    background: rgb(var(--sun-rgb));
+    transform: translateX(50%);
+  }
+  /* Each ray is a trapezoid (clip-path) that's narrow at the sun and flares
+     out as it extends. The gradient fades opacity from sun to tip so the
+     wider far end dissolves into the sky instead of ending in a hard edge. */
+  .dawn-ray {
+    /* Each modifier rule below sets its own --ray-width, so this fallback
+       only fires for a ray with no modifier class — changing it here has
+       no effect on the existing three rays. Edit the per-ray values below. */
+    width: var(--ray-width, 40px);
+    /* Ray height matters as much as the clip-path for how dramatic the flare
+       looks. The visible portion of each ray is bounded by the viewport top
+       (~145 px above the sun); since the clip-path apex and gradient stops
+       are all percentages, increasing this value lengthens the rays — the
+       fade-out moves further from the sun and the rays stay visible longer
+       along their direction. */
+    height: 325px;
+    /* Collapsed trapezoid → triangle (both bottom corners at 50%) for the
+       most dramatic flare possible: from a point at the base to full width
+       at the tip. Bottom point at y=74% leaves a ~17 px gap between the
+       sun's 48 px rim and where each ray begins. */
+    clip-path: polygon(0 0, 100% 0, 50% 80%, 50% 80%);
+    background: linear-gradient(
+      to top,
+      rgba(var(--ray-rgb), 0.95) 26%,
+      rgba(var(--ray-rgb), 0.5) 50%,
+      rgba(var(--ray-rgb), 0) 80%
+    );
+    transform-origin: 50% 100%;
+    transform: translateX(50%) rotate(var(--ray-angle, 0deg));
+  }
+  .dawn-ray--left {
+    /* Rotated +20° clockwise from the original -72° so it clears the logo. */
+    --ray-angle: -52deg;
+    --ray-width: 120px;
+  }
+  .dawn-ray--center {
+    --ray-angle: 8deg;
+    --ray-width: 76px;
+  }
+  .dawn-ray--right {
+    --ray-angle: 50deg;
+    --ray-width: 104px;
+  }
+</style>
