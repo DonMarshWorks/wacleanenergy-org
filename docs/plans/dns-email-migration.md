@@ -17,8 +17,27 @@ forwarder)._
 
 _Phase 0 facts gathered from public DNS + RDAP on 2026-05-21 are
 recorded inline; the WP.com DNS dashboard was reviewed the same day
-and the zone inventory is now complete (8 records — see Phase 0 #1).
-**Implementation not yet started.**_
+and the zone inventory confirmed complete (Phase 0 #1)._
+
+### Execution progress
+
+**As of 2026-05-21 (evening):**
+
+- **Phase 0 — done.** DNS inventory confirmed (9 records); DNSSEC
+  confirmed off; email confirmed on Titan; parent `.org` `NS` TTL
+  recorded at 86400s / 24h (Phase 0 #4); Zoho account set up
+  (Phase 0 #7).
+- **Phase 1 — done** (site live on `*.pages.dev`; pre-dates this plan).
+- **Phase 2A — done.** Cloudflare zone created, all 9 records
+  replicated DNS-only and verified; nameservers switched at
+  WordPress.com to `benedict.ns.cloudflare.com` /
+  `sonia.ns.cloudflare.com`, confirmed at the `.org` registry via
+  RDAP at 2026-05-21 22:13 UTC; Cloudflare zone reported **Active**.
+  The 24h hold period runs to ~2026-05-22 22:15 UTC before Phase 2B
+  and Phase 3 may proceed.
+- **Phase 2B and Phase 3 — pending the hold.** Phase 3's Zoho
+  records are staged — see Phase 3 #1 and #4.
+- **Phase 4, Phase 5 — pending.**
 
 ## Goal
 
@@ -151,7 +170,8 @@ this file.
 
 1. **Authoritative DNS inventory — done 2026-05-21.** The full
    WordPress.com DNS dashboard was reviewed; the zone is small and is
-   now completely known. Eight records:
+   now completely known. Nine DNS records (the WP.com dashboard
+   shows the two apex `A` records as a single row):
 
    | Type | Name | Value |
    |---|---|---|
@@ -205,6 +225,8 @@ this file.
    ```
    Resolve-DnsName -Name wacleanenergy.org -Type NS -Server a0.org.afilias-nst.info
    ```
+   **Recorded 2026-05-21: parent `NS` TTL = 86400s (24h).** This sets
+   the Phase 2A hold period and the rollback window.
 5. **DNSSEC status — confirmed OFF.** The domain is unsigned at the
    `.org` registry today (RDAP `delegationSigned: false`; no `DS`).
    Skip every "disable DNSSEC at the registrar" step the original
@@ -226,10 +248,16 @@ this file.
    `don.m.marsh@gmail.com` as the admin (matching current account
    ownership), subscribe to **Mail Lite** annual ($12/yr), add
    `wacleanenergy.org` as the domain, complete Zoho's domain-ownership
-   verification (`TXT` or `CNAME` — add at the WP.com DNS dashboard
-   now; it does not affect mail), and create the
-   `info@wacleanenergy.org` mailbox in Zoho. Do **not** change `MX`
-   yet — Titan keeps delivering until Phase 3.
+   verification, and create the `info@wacleanenergy.org` mailbox in
+   Zoho. Do **not** change `MX` yet — Titan keeps delivering until
+   Phase 3.
+   - **Done 2026-05-21.** Zoho account created on a clean WCEC-only
+     org (admin identity `info@wacleanenergy.org`; recovery email and
+     MFA set); Mail Lite annual subscribed (single subscription);
+     domain `wacleanenergy.org` verified; `info@` mailbox exists; `MX`
+     untouched. Verification was handled within Zoho's
+     Cloudflare-aware flow — no stray verification record left in the
+     zone.
 8. **Account security.** Enable 2FA on WordPress.com, Cloudflare, and
    Zoho. Store recovery codes in a password manager. The earlier plan
    required a "second authorized maintainer" — out of scope here
@@ -252,12 +280,12 @@ apex still pointing at WordPress.com (`192.0.78.24` / `192.0.78.25`)
 and the existing Titan `MX` records.
 
 1. In Cloudflare, **add `wacleanenergy.org` as a zone** ("Onboard a
-   domain"); let it auto-scan. The zone is small — the eight records
+   domain"); let it auto-scan. The zone is small — the nine records
    inventoried in Phase 0 #1 — so auto-scan should pick up most of
    it.
 2. **Reconcile against the Phase 0 #1 inventory, record by record.**
    Manually add anything auto-scan missed so the Cloudflare zone
-   holds all eight records, plus the Zoho domain-verification record
+   holds all nine records, plus the Zoho domain-verification record
    from Phase 0 #7. All records keep their current targets; set
    everything **DNS-only** (grey cloud), and set every record's TTL
    to **300s** now (Phase 0 #4). Then **diff the Cloudflare zone
@@ -331,22 +359,22 @@ and needs no nameserver change.
 Only after Phase 2A's hold period. Zoho is set up and the domain
 verified (Phase 0 #7).
 
-1. **Publish Zoho's auth records** (no inbound change yet):
-   - **DKIM:** add the Zoho DKIM selector `TXT` Zoho provides
-     (typically `zmail._domainkey.wacleanenergy.org` or similar);
+1. **Publish Zoho's auth records** (no inbound change yet). Values
+   captured from the Zoho console 2026-05-21:
+   - **DKIM:** add a `TXT` at `zmail._domainkey` (selector `zmail`)
+     with the Zoho DKIM key — copy the exact value from the Zoho
+     console at execution time, since Zoho can regenerate it — then
      enable DKIM signing in the Zoho console. The existing
-     `titan1._domainkey` record stays in place — there is no DKIM
-     conflict; outbound from each provider is signed under its own
-     selector.
+     `titan1._domainkey` record stays in place — no conflict; each
+     provider signs under its own selector.
    - **SPF — transitional merged record.** There must be exactly
-     **one** `v=spf1 TXT` at the apex. During Phase 3, publish a
-     record authorising **both** Titan and Zoho:
-     `v=spf1 include:spf.titan.email include:zoho.com ~all` (Zoho's
-     current SPF include is `zoho.com`; confirm in the Zoho admin
-     console at execution time). The `~all` soft-fail matches the
-     current posture. Validate with an SPF checker; confirm the
-     DNS-lookup count is ≤10 (current count after the merge would be
-     ~3 — well clear). **Record the old SPF value for rollback.**
+     **one** `v=spf1 TXT` at the apex. Publish the merged record
+     authorising **both** Titan and Zoho — this exact value is the
+     one Zoho's console offered:
+     `v=spf1 include:zohomail.com include:spf.titan.email ~all`
+     The `~all` soft-fail matches the current posture. Validate with
+     an SPF checker; confirm the DNS-lookup count is ≤10. **The old
+     value to keep for rollback is** `v=spf1 include:spf.titan.email ~all`.
 2. **Verify outbound alignment before touching `MX`.** Send a test
    message from the Zoho `info@` mailbox to an outside account and
    confirm **SPF and DKIM pass and align to `wacleanenergy.org`** in
@@ -360,9 +388,11 @@ verified (Phase 0 #7).
    IMAP login (from Phase 0 #6). Let the bulk migration run to
    completion. Titan is still authoritative — mail continues to land
    there.
-4. **Inbound cutover.** In Cloudflare DNS, **replace the Titan `MX`
-   records with Zoho's `MX` records**; record the original Titan
-   values (`mx1.titan.email`, `mx2.titan.email`). Mail delivered to
+4. **Inbound cutover.** In Cloudflare DNS, **replace the two Titan
+   `MX` records with Zoho's three** — `mx.zoho.com` (priority 10),
+   `mx2.zoho.com` (20), `mx3.zoho.com` (50); record the original
+   Titan values (`mx1.titan.email` priority 10, `mx2.titan.email`
+   priority 20) for rollback. Mail delivered to
    Titan during `MX` propagation stays in the Titan mailbox — do
    **not** attempt to forward `info@` to itself: forwarding to the
    same address at a still-authoritative Titan mailbox loops or
@@ -390,7 +420,7 @@ verified (Phase 0 #7).
    #5) is confirmed — no maintainer or system still sends through
    Titan — replace the transitional merged SPF record with the
    Zoho-only record:
-   `v=spf1 include:zoho.com ~all`.
+   `v=spf1 include:zohomail.com ~all`.
 5. **DMARC follow-on (optional but recommended).** If the Phase 0 #3
    `rua` was added, review the aggregate reports as they arrive over
    the following 1–2 weeks. Once Zoho-aligned mail is the only

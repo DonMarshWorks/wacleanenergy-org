@@ -1,162 +1,145 @@
 # Implementation Hand-off
 
-**Last updated:** 2026-05-21 (evening)
+**Last updated:** 2026-05-21 (late evening)
 
-**Outgoing session:** A planning/docs session — no source code changed.
-The DNS/email/registrar migration plan was rewritten from the ground
-up. The previous file, `godaddy-migration.md`, was built on a wrong
-premise: it assumed the domain was on GoDaddy DNS with GoDaddy-resold
-Microsoft 365 email. Public DNS + RDAP lookups this session established
-the real stack — registrar is **Automattic Inc.** (WordPress.com's
-in-house registrar), DNS authority is **WordPress.com** nameservers,
-web hosting is WordPress.com, and `info@` email is on **Titan**
-(`mx*.titan.email`, sold through WP.com's "Professional Email"
-product). DNSSEC is off; there is no CAA; the Titan DKIM key is
-already published. The plan was rewritten as
-`docs/plans/dns-email-migration.md` with accurate vocabulary, the
-DNSSEC contingency tree collapsed to "off — skip", the email phase
-re-sourced from Titan (Zoho lists Titan as a first-class migration
-source), a real cost comparison added, and Phase 0 fact-gathering
-recorded as essentially complete. The user confirmed the WP.com DNS
-dashboard (8 records total — one more than the public view: a
-`_domainconnect` TXT) and the email destination decision (Zoho Mail
-Lite, $12/yr, chosen over keeping Titan-via-WP.com at $35/yr).
-Implementation of the migration itself has still not begun.
+**Outgoing session:** Began as a planning/docs session and continued
+into live migration execution. First, the DNS/email/registrar
+migration plan was rewritten from the mis-premised `godaddy-migration.md`
+into `dns-email-migration.md` (committed `c3ca797`). Then **Phase 2A
+of the migration was executed**: `wacleanenergy.org` is now a
+Cloudflare DNS zone and the nameservers were switched away from
+WordPress.com. In parallel, the **Zoho email account was set up**
+(Phase 0 #7). The migration is now mid-flight, inside the 24-hour
+DNS-propagation hold that precedes Phase 2B and Phase 3. No site- or
+mail-facing change has happened yet — the apex still serves the old
+WordPress.com site and email still flows through Titan.
 
 ---
 
+## Migration state — READ THIS FIRST next session
+
+The migration is **partway through** and time-gated. Current position:
+
+- **Phase 2A — DONE.** DNS authority moved to Cloudflare. The
+  `wacleanenergy.org` zone holds all 9 records (DNS-only, verified);
+  nameservers are `benedict.ns.cloudflare.com` /
+  `sonia.ns.cloudflare.com`, confirmed at the `.org` registry via
+  RDAP at 2026-05-21 22:13 UTC; the Cloudflare zone is **Active**.
+- **24h hold period — running.** Clears ~**2026-05-22 22:15 UTC**
+  (~3:15 PM Pacific, 2026-05-22). Phase 2B and Phase 3 must not start
+  before then.
+- **Next:** after the hold, run **Phase 2B** (point the apex at
+  Cloudflare Pages — the site flips to the new Astro site) and
+  **Phase 3** (email cutover to Zoho). Both are interactive — Don
+  drives the dashboards, Claude verifies. Step-by-step procedure is
+  in `docs/plans/dns-email-migration.md`; the Status section there
+  has the execution-progress summary.
+
+### Staged for Phase 3 (Zoho records captured 2026-05-21)
+
+- **MX:** `mx.zoho.com` (priority 10), `mx2.zoho.com` (20),
+  `mx3.zoho.com` (50) — replace the two Titan `MX` records.
+- **SPF (transitional merged):**
+  `v=spf1 include:zohomail.com include:spf.titan.email ~all`
+- **DKIM:** selector `zmail` → `TXT` at `zmail._domainkey` (copy the
+  exact key from the Zoho console at execution time).
+- Zoho account: clean WCEC-only org, admin identity
+  `info@wacleanenergy.org`, Mail Lite annual, `info@` mailbox exists.
+
+### Environment quirk to remember
+
+Don's local network transparently intercepts/caches DNS (UDP *and*
+TCP), so `Resolve-DnsName`/`dig` from his machine cannot reach
+authoritative nameservers directly — results are stale cache. Verify
+DNS via **RDAP** (registry state) or **WebFetch to a public DoH
+resolver / the live site** instead. This worked fine for Phase 2A and
+will for the rest.
+
 ## Shipped this session
 
-- **`docs/plans/dns-email-migration.md`** — the rewritten migration
-  plan, replacing `godaddy-migration.md` (deleted). Same proven
-  phased structure (Phase 0 prep → 2A nameserver switch → 2B Pages
-  apex → 3 email → 4 verify/cleanup → 5 optional registrar transfer),
-  but grounded in verified facts:
-  - Real stack documented: Automattic registrar, WordPress.com DNS,
-    Titan email. Domain expires 2026-12-18; ICANN 60-day transfer
-    lock already expired.
-  - DNSSEC confirmed off — every DNSSEC contingency collapsed to a
-    one-line "skip"; optional first-time enablement deferred to
-    Phase 5.
-  - Phase 0 #1 inventory recorded as complete: 8 DNS records in a
-    table, including the `_domainconnect` TXT not visible to public
-    `dig`.
-  - Phase 0 #4 rewritten: WP.com exposes no per-record TTL control
-    (records served at a fixed ~1h), so TTLs are lowered in the
-    Cloudflare zone after Phase 2A instead of at the source.
-  - Email phase re-sourced from Titan; Zoho's admin-console migration
-    lists Titan as a named source, so mail history (folders,
-    read/unread state, timestamps) migrates cleanly.
-  - Cost table added: today $47/yr + WP.com site plan → post-Phase 4
-    $24/yr → post-Phase 5 $22/yr.
-  - DMARC reality corrected: current policy is `p=none` with no
-    `rua`; plan adds a `rua` mailbox in Phase 0 and leaves tightening
-    to a Phase 4 follow-on.
-- **Cross-references updated** — `README.md` and
-  `docs/plans/content-migration.md` now point at the new plan
-  filename.
-- **`README.md` stack fix** — corrected a stale line that still
-  claimed the site uses the Cloudflare SSR adapter; the site is fully
-  static (no adapter — see `astro.config.mjs`).
+- **`docs/plans/dns-email-migration.md`** — migration plan rewritten
+  from `godaddy-migration.md` (deleted) and grounded in verified
+  facts. Committed `c3ca797`. This session also updated its Status
+  section with the Phase 2A execution record and staged Phase 3
+  values.
+- **Phase 2A executed** — Cloudflare zone `wacleanenergy.org`
+  created, 9 records replicated DNS-only, preflight-verified;
+  nameservers switched at WordPress.com; registry-confirmed; zone
+  Active.
+- **Zoho account set up** — Mail Lite annual, domain verified,
+  `info@` mailbox, recovery email + MFA.
+- Cross-references and a stale `README.md` stack line fixed
+  (committed `c3ca797`).
 
-## Quality gates (at this commit)
+## Quality gates
 
-Docs-only session — no files under `src/` changed. Lint, tests, and
-build are unchanged from the previous commit (`f59a25c`): 7/7 tests,
-lint clean, build emits 21 static pages.
+No source code (`src/`) changed this session — all work was docs and
+external dashboards. Lint/tests/build unchanged from `f59a25c`:
+7/7 tests, lint clean, build emits 21 static pages.
 
-## Cumulative state
-
-### Shipped features
+## Cumulative state — the site itself
 
 - Brand-themed static Astro 5 site, fully Markdown-driven prose,
   auto-deploying from `main` to https://wacleanenergy-org.pages.dev.
-- Home page with the emissions chart, lead-paragraph styling, and the
-  dawn-sun motif.
-- /who-we-are with chair photo and "What we do →" CTA.
-- /what-we-do with normalised partner-logo grid and "Get in touch" CTA.
-- /contact, /news (paginated with RSS), 404, sitemap, canonical URLs,
-  Open Graph + Twitter meta with a real social card.
-- News section with 14 real posts + per-post PDF link to the source
-  filing in `public/news-assets/`.
-- Fraunces serif on H1/H2 across the site, Fontsource-bundled.
-- Brand-derived favicon visible on both light and dark tab chromes.
-
-### Migration readiness
-
-- `docs/plans/dns-email-migration.md` is hardened and Phase 0
-  fact-gathering is essentially complete. Implementation has **not**
-  begun. Remaining Phase 0 inputs before execution: the user's
-  low-traffic-window choice, creating the Zoho account, and
-  confirming the WP.com Professional Email plan/renewal details.
+- Home (emissions chart, lead paragraph, dawn-sun motif),
+  /who-we-are, /what-we-do (partner-logo grid), /contact,
+  /news (14 real posts, paginated, RSS), 404, sitemap, OG/Twitter
+  meta + social card, Fraunces serif headings, brand favicon.
 
 ### Accepted regressions / known limitations
 
 - **/contact body** remains placeholder pending coalition input.
 - Brand teal / navy / ink tokens are eyedrop estimates from the logo;
-  `--color-surface` was sampled then nudged lighter to `#fcfdf7` with
-  the logo recolored to match.
-- One news post's `pubDate` is approximate: `2022-02-pse-ceip-recommendations`
-  uses `2022-02-15` since the source PDF is undated. Update if the real
-  distribution date surfaces.
+  `--color-surface` nudged to `#fcfdf7`.
+- `2022-02-pse-ceip-recommendations` `pubDate` is approximate
+  (`2022-02-15`) — source PDF undated.
 
-### Pre-existing issues surfaced (not introduced by this work)
+### Pre-existing issues (not introduced this work)
 
-- IDE TypeScript LSP reports false-positive "unused" hints for Astro
-  components used in templates. `astro check` is clean; the LSP
-  diagnostics are informational only.
-- Astro 6.3.7 is now available; we're on 5.18.1. No upgrade pressure.
+- IDE TypeScript LSP false-positive "unused" hints for Astro
+  components used in templates; `astro check` is clean.
+- Astro 6.3.7 available; on 5.18.1. No upgrade pressure.
 
 ## Deployment
 
 - **GitHub:** https://github.com/DonMarshWorks/wacleanenergy-org (public)
 - **Cloudflare Pages project:** `wacleanenergy-org`, production branch
   `main`, served at https://wacleanenergy-org.pages.dev.
-- **Deploy mechanism:** auto-deploy on push to `main` via the Pages Git
-  integration. PR branches get free preview deploys. `npm run deploy`
-  still works as a manual fallback.
-- **Custom domain:** **not attached** — `wacleanenergy.org` still serves
-  the old WordPress.com site. Attaching it is Phase 2B of the
-  migration plan and depends on Phase 0.
-- All accounts (GitHub `DonMarshWorks`, Cloudflare, WordPress.com) are
-  Don Marsh's personal accounts (`don.m.marsh@gmail.com`). Don is the
-  sole operator; long-term, transfer to coalition-controlled accounts
-  is recommended.
+- **Deploy mechanism:** auto-deploy on push to `main`.
+- **Custom domain:** **not yet attached.** `wacleanenergy.org` still
+  serves the old WordPress.com site — that flips in Phase 2B.
+- **DNS:** as of this session, `wacleanenergy.org` is a Cloudflare
+  zone; DNS is managed in the Cloudflare dashboard, not WordPress.com.
+- All accounts (GitHub, Cloudflare, WordPress.com, Zoho) are Don
+  Marsh's personal accounts; Don is the sole operator.
 
 ## Recent commits
 
 ```
+c3ca797  Plans: rewrite DNS migration around the real WordPress.com stack
+0e658fd  Handoff: refresh for end of 2026-05-21 polish + news session
 f59a25c  News: backfill fourteen real posts from coalition's filing archive
 c30abc7  Polish: heading font, footer nav, social card, favicon, lead paragraph
 434d9ae  Header: dawn motif (sun + rays) behind nav on every page
-8ff3391  home: emissions chart between paragraphs (MDX) + palette retune + dawn sun
-fcb6e2d  what-we-do: add partner logo grid
-d22d97b  Pages: convert bodies to Markdown, add real content, drop orphans
-948079e  Home: pilot body-to-Markdown; fold in pending copy edits
-4a98c24  Nav cleanup: sentence case + trim to five items
 ```
 
-This session's commit (the plan rewrite) lands on top of `f59a25c`.
-The earlier handoff commit `0e658fd` and the three feature commits
-before it are already pushed to `origin/main`.
+This session's commit (plan + HANDOFF execution update) lands on top
+of `c3ca797`. All prior commits are on `origin/main`.
 
 ## Incoming session options
 
-1. **Execute the WordPress.com → Cloudflare migration** — the natural
-   next step. `docs/plans/dns-email-migration.md` is hardened and
-   Phase 0 facts are gathered. Before starting: pick low-traffic
-   windows for the Phase 2A and Phase 3 cutovers, and set up the
-   coalition Zoho account.
-2. **Replace remaining placeholder content** — the `/contact` body is
-   still a placeholder; mechanical edit to `src/content/pages/contact.md`.
-3. **More news posts** — when new filings appear, add to
-   `src/content/news/` following the established pattern (kebab-case
-   slug filename; frontmatter with `title`, `pubDate`, `description`,
-   optional `tags`; body of 2-sentence intro + 3–5 bullet main points
-   + `<a target="_blank" rel="noopener">Read the full document
-   (PDF)</a>` link to a PDF in `public/news-assets/`).
-4. **Open the preview URL for reviewers** — share
-   https://wacleanenergy-org.pages.dev and gather feedback before the
-   public cutover.
-5. **Transfer GitHub repo + Cloudflare account to coalition control**
-   — currently both personal.
+1. **Resume the migration — Phase 2B + Phase 3.** The natural next
+   step, available once the 24h hold clears (~2026-05-22 22:15 UTC).
+   Follow `docs/plans/dns-email-migration.md`. Phase 2B points the
+   apex at Pages (site goes live as the Astro build); Phase 3 cuts
+   email over to Zoho using the staged records above. Interactive —
+   guide Don, verify each step. Then Phase 4 (verify/cleanup) and
+   optionally Phase 5 (registrar transfer).
+2. **Replace placeholder content** — `/contact` body in
+   `src/content/pages/contact.md`.
+3. **More news posts** — add to `src/content/news/` following the
+   established pattern (kebab-case slug; frontmatter `title`,
+   `pubDate`, `description`, optional `tags`; 2-sentence intro +
+   3–5 bullets + a `<a target="_blank" rel="noopener">Read the full
+   document (PDF)</a>` link to a PDF in `public/news-assets/`).
+4. **Transfer GitHub repo + Cloudflare account to coalition control.**
