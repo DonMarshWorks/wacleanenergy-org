@@ -12,7 +12,7 @@ const href = `/news/${post.id}/`;
 ---
 
 <article class="border-b border-brand/15 py-6 last:border-b-0">
-  <p class="text-sm text-ink/70">
+  <p class="text-sm text-ink/85">
     <time datetime={post.data.pubDate.toISOString()}
       >{formatDate(post.data.pubDate)}</time
     >
@@ -24,6 +24,7 @@ const href = `/news/${post.id}/`;
   {post.data.outcome && <Outcome outcome={post.data.outcome} variant="card" />}
   <a
     class="mt-2 inline-block text-sm font-medium text-brand hover:underline"
-    href={href}>Read more →</a
+    href={href}
+    aria-label={`Read more: ${post.data.title}`}>Read more →</a
   >
 </article>

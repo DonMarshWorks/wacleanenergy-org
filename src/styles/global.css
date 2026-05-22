@@ -31,6 +31,12 @@ h2 {
 html {
   scroll-behavior: smooth;
 }
+/* Respect a reduced-motion preference: no smooth-scroll animation. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
 
 /* Typography for rendered Markdown news posts. Applied via a global class
  * (not a Tailwind utility) so it reaches the HTML emitted by <Content />,

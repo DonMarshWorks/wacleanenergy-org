@@ -65,7 +65,7 @@ const s = STATUS[outcome.status];
         </svg>
         {s.label}
       </span>
-      <span class="min-w-0 truncate text-ink/75">{outcome.text}</span>
+      <span class="min-w-0 truncate text-ink/85">{outcome.text}</span>
     </p>
   ) : (
     <aside
@@ -92,7 +92,7 @@ const s = STATUS[outcome.status];
       </p>
       <p class="mt-2 leading-relaxed text-ink">{outcome.text}</p>
       {outcome.date && (
-        <p class="mt-2 text-sm text-ink/60">
+        <p class="mt-2 text-sm text-ink/85">
           <time datetime={outcome.date.toISOString()}>
             {formatDate(outcome.date)}
           </time>
