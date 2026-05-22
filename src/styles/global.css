@@ -17,6 +17,8 @@
   --color-ink: #54534c;
   --color-surface: #fcfdf7;
   --color-warn: #c0392b;
+  --color-success: #3a7d44;
+  --color-pending: #3a6ea5;
 }
 
 /* Display font is applied broadly to all H1 and H2 elements. Body and

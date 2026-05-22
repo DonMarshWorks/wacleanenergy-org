@@ -2,6 +2,7 @@
 import type { GetStaticPaths } from "astro";
 import { render, type CollectionEntry } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Outcome from "../../components/Outcome.astro";
 import { getPublishedNews } from "../../lib/news";
 import { formatDate } from "../../lib/format";
 
@@ -26,6 +27,11 @@ const { Content } = await render(post);
       >
     </p>
     <h1 class="mt-1 text-3xl font-bold text-brand-dark">{post.data.title}</h1>
+    {
+      post.data.outcome && (
+        <Outcome outcome={post.data.outcome} variant="full" />
+      )
+    }
     <div class="post-body mt-6">
       <Content />
     </div>

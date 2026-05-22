@@ -9,6 +9,10 @@ tags:
   - pse
   - utc
   - ceta
+outcome:
+  status: mixed # win | setback | mixed | pending
+  text: "The WUTC accepted PSE's explanations regarding why the targets were missed. The commissioners did not allow the company to reduce the targets, but hinted that there would not be significant penalties for missing them. PSE has a chance to improve in future filings."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC strongly opposed Puget Sound Energy's proposal to lower its interim

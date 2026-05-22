@@ -10,6 +10,10 @@ tags:
   - pse
   - utc
   - public-participation
+outcome:
+  status: setback # win | setback | mixed | pending
+  text: "The WUTC did not require any changes regarding how PSE conducts its advisory groups."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC asked the Washington Utilities and Transportation Commission to

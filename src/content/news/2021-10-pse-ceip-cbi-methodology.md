@@ -11,6 +11,10 @@ tags:
   - pse
   - utc
   - ceip
+outcome:
+  status: mixed # win | setback | mixed | pending
+  text: "PSE met with WCEC members to discuss scoring methods and considered our detailed feedback."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC and Vashon Climate Action Group challenged Puget Sound Energy's

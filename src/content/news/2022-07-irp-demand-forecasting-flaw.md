@@ -11,6 +11,10 @@ tags:
   - pse
   - utc
   - irp
+outcome:
+  status: win # win | setback | mixed | pending
+  text: "The WUTC required PSE to account for the impact of climate change in its long-range demand forecasts."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC notified PSE's IRP Team and WUTC staff of a systematic flaw in

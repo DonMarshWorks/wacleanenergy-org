@@ -12,6 +12,17 @@ const news = defineCollection({
       description: z.string().min(1),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false),
+      // Optional advocacy outcome — added to a post when a result lands,
+      // often months after the filing. Renders as a status callout.
+      // date is optional because older results are hard to pin down.
+      outcome: z
+        .object({
+          status: z.enum(["win", "setback", "mixed", "pending"]),
+          text: z.string().min(1),
+          date: z.coerce.date().optional(),
+        })
+        .strict()
+        .optional(),
     })
     .strict(),
 });

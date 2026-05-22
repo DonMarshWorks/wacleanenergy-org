@@ -9,6 +9,10 @@ description: >-
 tags:
   - data-centers
   - governor
+outcome:
+  status: pending # win | setback | mixed | pending
+  text: "The governor has not published a response to the Workgroup's findings yet. We will update if/when a policy is announced."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 In a joint letter to Governor Ferguson, WCEC and Third Act Washington

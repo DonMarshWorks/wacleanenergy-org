@@ -9,6 +9,10 @@ description: >-
 tags:
   - governor
   - nuclear
+outcome:
+  status: pending # win | setback | mixed | pending
+  text: "No response from the governor yet. We will update when we receive the governor's reply."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC wrote to Governor Bob Ferguson to share concerns about the

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { formatDate } from "../lib/format";
+import Outcome from "./Outcome.astro";
 
 interface Props {
   post: CollectionEntry<"news">;
@@ -20,6 +21,7 @@ const href = `/news/${post.id}/`;
     <a class="hover:text-brand" href={href}>{post.data.title}</a>
   </h2>
   <p class="mt-2">{post.data.description}</p>
+  {post.data.outcome && <Outcome outcome={post.data.outcome} variant="card" />}
   <a
     class="mt-2 inline-block text-sm font-medium text-brand hover:underline"
     href={href}>Read more →</a

@@ -11,6 +11,10 @@ tags:
   - utc
   - irp
   - gas
+outcome:
+  status: win # win | setback | mixed | pending
+  text: "WCEC demonstrated to the WUTC that PSE's egregious gas plan was not just bad for Washington. People from 47 states signed WCEC's online petition urging the WUTC to reject the plan. Although the commissioners did not reject the plan, neither did they accept it or provide any response at all. Their silence left the plan in legal limbo, although that awkward situation has been mitigated by the transition to a new integrated system plan which will consider gas and electricity together as the transition from fossil fuels progresses."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC submitted additional comments to the WUTC on Puget Sound Energy's

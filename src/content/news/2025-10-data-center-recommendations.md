@@ -10,6 +10,10 @@ description: >-
 tags:
   - data-centers
   - clean-energy
+outcome:
+  status: win # win | setback | mixed | pending
+  text: "The Workgroup's recommendations to the governor were less favorable to industry than we initially feared, especially considering the heavy representation of the industry in the Workgroup."
+  date: 2025-12-01 # optional — set if the result's date is known
 ---
 
 WCEC and Third Act Washington jointly recommended six conditions to the

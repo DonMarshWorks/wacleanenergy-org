@@ -11,6 +11,10 @@ tags:
   - utc
   - ceip
   - climate
+outcome:
+  status: win # win | setback | mixed | pending
+  text: "Although the WUTC did not reject the plan, the commisioners later required PSE to update climate modeling to account for climate change. This impacted peak demand calculations in both summer and winter seasons."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 A coalition of fifteen environmental organizations including the Washington

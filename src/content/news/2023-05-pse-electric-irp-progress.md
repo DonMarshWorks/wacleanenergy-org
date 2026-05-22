@@ -10,6 +10,10 @@ tags:
   - pse
   - utc
   - irp
+outcome:
+  status: setback # win | setback | mixed | pending
+  text: "No independent analysis of PSE's plans or process has been ordered."
+  # date: 2025-01-01 # optional — set if the result's date is known
 ---
 
 WCEC commented to the WUTC on Puget Sound Energy's 2023 Electric
