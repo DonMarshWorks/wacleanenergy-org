@@ -41,15 +41,18 @@ and the zone inventory confirmed complete (Phase 0 #1)._
   inbound and outbound on Zoho confirmed with SPF + DKIM aligned. Bulk
   Titan → Zoho mail migration completed via Zoho's named-source tool.
 - **Phase 4 — substantively done.** Cutover gate (site over HTTPS,
-  send/receive on Zoho with SPF + DKIM aligned) is green. Optional
-  follow-ons that are still open or want verification: 4.4 SPF narrowed
-  to Zoho-only (vs the transitional merged record); 4.5 DMARC
-  tightening from `p=none`; 4.7 dead `_domainconnect` `TXT` dropped
-  from the Cloudflare zone; 4.8 final delta mail migration from Titan;
+  send/receive on Zoho with SPF + DKIM aligned) is green. **4.10**
+  (Professional Email cancellation) closed out implicitly when the
+  WordPress.com account itself was deleted on 2026-05-23; **4.8**
+  (final delta migration from Titan) is moot for the same reason —
+  any mail that landed in Titan during the brief MX-propagation tail
+  and wasn't pulled by the initial bulk migration is unrecoverable.
+  Optional follow-ons still open: 4.4 SPF narrowed to Zoho-only (vs
+  the transitional merged record); 4.5 DMARC tightening from `p=none`;
+  4.7 dead `_domainconnect` `TXT` dropped from the Cloudflare zone;
   4.9 first-time DNSSEC enablement at Cloudflare — intentionally
-  deferred during the Phase 5 transfer window, to be enabled once the
-  transfer settles; 4.10 WordPress.com Professional Email subscription
-  cancelled.
+  deferred during the Phase 5 transfer window, now one-click and
+  ready when desired.
 - **Phase 5 — done** (2026-05-23 23:13 UTC). Registrar transferred from
   Automattic Inc. (IANA 1531) to Cloudflare, Inc. (IANA 1910);
   confirmed via RDAP at the `.org` registry. Expiration extended one
