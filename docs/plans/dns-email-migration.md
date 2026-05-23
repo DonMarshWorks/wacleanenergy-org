@@ -21,23 +21,44 @@ and the zone inventory confirmed complete (Phase 0 #1)._
 
 ### Execution progress
 
-**As of 2026-05-21 (evening):**
+**As of 2026-05-23:**
 
-- **Phase 0 — done.** DNS inventory confirmed (9 records); DNSSEC
-  confirmed off; email confirmed on Titan; parent `.org` `NS` TTL
-  recorded at 86400s / 24h (Phase 0 #4); Zoho account set up
+- **Phase 0 — done** (2026-05-21). DNS inventory confirmed (9 records);
+  DNSSEC confirmed off; email confirmed on Titan; parent `.org` `NS`
+  TTL recorded at 86400s / 24h (Phase 0 #4); Zoho account set up
   (Phase 0 #7).
 - **Phase 1 — done** (site live on `*.pages.dev`; pre-dates this plan).
-- **Phase 2A — done.** Cloudflare zone created, all 9 records
-  replicated DNS-only and verified; nameservers switched at
-  WordPress.com to `benedict.ns.cloudflare.com` /
-  `sonia.ns.cloudflare.com`, confirmed at the `.org` registry via
-  RDAP at 2026-05-21 22:13 UTC; Cloudflare zone reported **Active**.
-  The 24h hold period runs to ~2026-05-22 22:15 UTC before Phase 2B
-  and Phase 3 may proceed.
-- **Phase 2B and Phase 3 — pending the hold.** Phase 3's Zoho
-  records are staged — see Phase 3 #1 and #4.
-- **Phase 4, Phase 5 — pending.**
+- **Phase 2A — done** (2026-05-21 22:13 UTC). Cloudflare zone created,
+  all 9 records replicated DNS-only and verified; nameservers switched
+  at WordPress.com to `benedict.ns.cloudflare.com` /
+  `sonia.ns.cloudflare.com`, confirmed at the `.org` registry via RDAP;
+  Cloudflare zone reported **Active**.
+- **Phase 2B — done** (2026-05-22, after the 24h parent-`NS`-TTL hold).
+  Apex + `www` serve the Astro site over HTTPS from Cloudflare Pages;
+  the WordPress.com site hosting plan was cancelled per the Phase 2B
+  note.
+- **Phase 3 — done** (2026-05-22). `MX` flipped from Titan to Zoho;
+  inbound and outbound on Zoho confirmed with SPF + DKIM aligned. Bulk
+  Titan → Zoho mail migration completed via Zoho's named-source tool.
+- **Phase 4 — substantively done.** Cutover gate (site over HTTPS,
+  send/receive on Zoho with SPF + DKIM aligned) is green. Optional
+  follow-ons that are still open or want verification: 4.4 SPF narrowed
+  to Zoho-only (vs the transitional merged record); 4.5 DMARC
+  tightening from `p=none`; 4.7 dead `_domainconnect` `TXT` dropped
+  from the Cloudflare zone; 4.8 final delta mail migration from Titan;
+  4.9 first-time DNSSEC enablement at Cloudflare — intentionally
+  deferred during the Phase 5 transfer window, to be enabled once the
+  transfer settles; 4.10 WordPress.com Professional Email subscription
+  cancelled.
+- **Phase 5 — done** (2026-05-23 23:13 UTC). Registrar transferred from
+  Automattic Inc. (IANA 1531) to Cloudflare, Inc. (IANA 1910);
+  confirmed via RDAP at the `.org` registry. Expiration extended one
+  year as part of the transfer to **2027-12-18**. ICANN's standard
+  60-day post-transfer lock runs until ~2026-07-22; Cloudflare's
+  `clientTransferProhibited` registrar lock auto-applied. Auth/EPP
+  code discarded. WordPress.com is fully out of the stack — registrar,
+  DNS, web, and email now live under Cloudflare (registrar / DNS /
+  Pages) and Zoho (mailbox).
 
 ## Goal
 
