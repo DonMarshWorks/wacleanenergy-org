@@ -1,16 +1,16 @@
 # Security headers, applied by Cloudflare Pages on deploy. They have no
-# effect on the local `npm run dev` server. HSTS is intentionally omitted
-# here — enable it at the Cloudflare zone level (SSL/TLS > Edge
-# Certificates) once the custom domain is live and HTTPS is confirmed.
+# effect on the local `npm run dev` server. HSTS lives at the Cloudflare
+# zone level (SSL/TLS > Edge Certificates), not here.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' cloudflareinsights.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 
-# The CSP above suits the current fully-static, zero-JavaScript build
-# ('unsafe-inline' covers Astro's inline style attributes/blocks only —
-# never scripts). If Cloudflare Web Analytics is enabled later, its
-# beacon needs the CSP widened: add static.cloudflareinsights.com to
-# script-src and a `connect-src 'self' cloudflareinsights.com` directive.
+# CSP notes:
+#   - 'unsafe-inline' in style-src covers Astro's inline style attributes
+#     and inlined <style> blocks. Never used for script-src.
+#   - The cloudflareinsights.com entries (script-src, connect-src) allow
+#     the Cloudflare Web Analytics beacon, auto-injected by Cloudflare
+#     Pages when Web Analytics is enabled for the project.
