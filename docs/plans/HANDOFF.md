@@ -85,6 +85,17 @@ to Success within hours to a day.
   GSC verification by some minutes/hours), so manual file
   verification was used instead. `sitemap-index.xml` submitted and
   cleared to **Success** in the same session.
+
+**Email deliverability test:** sent from `info@wacleanenergy.org`
+via Zoho to mail-tester.com. **Scored 10/10** — SPF, DKIM, DMARC,
+rDNS, blacklist, and message-content checks all clean. The
+post-Phase-4 stack (Zoho-only SPF, Zoho DKIM, DMARC with `rua=`,
+DNSSEC-on) is fully validated end-to-end. One note for future
+hardening: Zoho's DKIM key is 1024-bit (the older default); modern
+best practice is 2048-bit. Not a deliverability blocker — major
+providers still accept 1024-bit — but if a future session wants
+maximum-strength auth, regenerate in Zoho Mail Admin → Domains →
+DKIM at 2048-bit and update the `zmail._domainkey` TXT.
 - **Note on the Cloudflare-Connect prompt during GSC verification:**
   When Google detected Cloudflare nameservers it offered a "one-time
   authorization" flow (titled "Authorize DNS records from Google")
@@ -217,16 +228,16 @@ post-launch hardening, and ongoing content work.
 
 ### Post-launch hardening / ops
 
-- **Email deliverability test.** Send from `info@wacleanenergy.org`
-  to mail-tester.com (or similar). Tighten what the score flags.
-  Now that SPF is Zoho-only and DNSSEC is on, the score should be
-  cleaner than it would have been a session ago.
 - **Watch GSC / Bing reports.** No action needed soon — both are
   set up and the sitemap was accepted. Worth opening GSC's
   *Performance* and *Indexing > Pages* views after a week or two to
   see what's getting crawled and surfaced; same with Bing's
   *Search Performance* and *Site Explorer*. If anything important
   is excluded, GSC's *URL Inspection* tool will say why.
+- **Optional DKIM upgrade to 2048-bit.** Zoho's default is 1024-bit;
+  mail-tester accepts it but a stronger key is best practice.
+  Regenerate in Zoho Mail Admin → Domains → DKIM and update the
+  `zmail._domainkey` TXT in Cloudflare. ~10 min total.
 
 ### Content
 
