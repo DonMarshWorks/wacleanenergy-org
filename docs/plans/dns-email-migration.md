@@ -40,19 +40,26 @@ and the zone inventory confirmed complete (Phase 0 #1)._
 - **Phase 3 — done** (2026-05-22). `MX` flipped from Titan to Zoho;
   inbound and outbound on Zoho confirmed with SPF + DKIM aligned. Bulk
   Titan → Zoho mail migration completed via Zoho's named-source tool.
-- **Phase 4 — substantively done.** Cutover gate (site over HTTPS,
-  send/receive on Zoho with SPF + DKIM aligned) is green. **4.10**
-  (Professional Email cancellation) closed out implicitly when the
-  WordPress.com account itself was deleted on 2026-05-23; **4.8**
-  (final delta migration from Titan) is moot for the same reason —
-  any mail that landed in Titan during the brief MX-propagation tail
-  and wasn't pulled by the initial bulk migration is unrecoverable.
-  Optional follow-ons still open: 4.4 SPF narrowed to Zoho-only (vs
-  the transitional merged record); 4.5 DMARC tightening from `p=none`;
-  4.7 dead `_domainconnect` `TXT` dropped from the Cloudflare zone;
-  4.9 first-time DNSSEC enablement at Cloudflare — intentionally
-  deferred during the Phase 5 transfer window, now one-click and
-  ready when desired.
+- **Phase 4 — done** (closed out 2026-05-23, after this session's
+  tidies landed). Cutover gate (site over HTTPS, send/receive on Zoho
+  with SPF + DKIM aligned) was green earlier. **4.10** (Professional
+  Email cancellation) closed out implicitly when the WordPress.com
+  account itself was deleted; **4.8** (final delta migration from
+  Titan) is moot for the same reason — any mail that landed in Titan
+  during the brief MX-propagation tail and wasn't pulled by the
+  initial bulk migration is unrecoverable. **4.4** SPF narrowed to
+  `v=spf1 include:zohomail.com ~all` (Titan include removed). **4.5
+  step 1** done: `rua=mailto:info@wacleanenergy.org` added to the
+  `_dmarc` `TXT`; `p=none` retained pending ~2 weeks of aggregate
+  reports before stepping to `p=quarantine`. **4.7** dead
+  `_domainconnect` `TXT` deleted; the orphan Titan DKIM record
+  (`titan1._domainkey`) was also deleted in the same pass. **4.9**
+  DNSSEC enabled at Cloudflare; DS record (key tag 2371, algorithm
+  13 ECDSAP256SHA256) published at PIR within minutes; cross-checked
+  via Cloudflare and Google DoH — `AD: true` confirms the chain of
+  trust is being validated end-to-end. Only DMARC step 2 (the actual
+  `p=` tightening) remains, and that's a multi-week observation step,
+  not a session-bounded action.
 - **Phase 5 — done** (2026-05-23 23:13 UTC). Registrar transferred from
   Automattic Inc. (IANA 1531) to Cloudflare, Inc. (IANA 1910);
   confirmed via RDAP at the `.org` registry. Expiration extended one
@@ -444,13 +451,16 @@ verified (Phase 0 #7).
    #5) is confirmed — no maintainer or system still sends through
    Titan — replace the transitional merged SPF record with the
    Zoho-only record:
-   `v=spf1 include:zohomail.com ~all`.
+   `v=spf1 include:zohomail.com ~all`. **Done 2026-05-23.**
 5. **DMARC follow-on (optional but recommended).** If the Phase 0 #3
    `rua` was added, review the aggregate reports as they arrive over
    the following 1–2 weeks. Once Zoho-aligned mail is the only
    passing source and there is no unexpected upstream sending,
    consider tightening to `p=quarantine` (and later `p=reject`). This
    is a per-domain trust posture; not a cutover-blocking step.
+   **Step 1 done 2026-05-23**: `rua=mailto:info@wacleanenergy.org`
+   added to `_dmarc`; `p=none` retained pending report observation
+   before stepping up.
 6. The direct send/receive tests in #2–3 are the cutover gate. DMARC
    aggregate reports are **confirmatory only** — review them as they
    arrive, but do not block cleanup on them, since not every receiver
@@ -458,7 +468,9 @@ verified (Phase 0 #7).
 7. **Drop the dead `_domainconnect` `TXT`** carried over verbatim in
    Phase 2A — it is inert now that DNS is on Cloudflare. Then
    spot-check other DNS-dependent services: the website renders and
-   the Zoho mailbox can be logged into from a phone.
+   the Zoho mailbox can be logged into from a phone. **Done
+   2026-05-23**; the orphan `titan1._domainkey` Titan DKIM record was
+   also deleted in the same pass.
 8. **Final delta migration:** ~48h after the `MX` cutover, re-run
    Zoho's migration tool against the Titan mailbox to catch mail
    delivered to Titan during propagation; confirm the Titan mailbox
@@ -472,7 +484,11 @@ verified (Phase 0 #7).
    zone and add the generated `DS` record at WordPress.com's DNSSEC
    panel manually — confirm WP.com supports adding a custom `DS`
    record at the registrar (some registrars do not, in which case
-   defer to Phase 5).
+   defer to Phase 5). **Done 2026-05-23 post-Phase-5**: DNSSEC
+   enabled at Cloudflare; DS (key tag 2371, algorithm 13
+   ECDSAP256SHA256, digest 674F99ED…) published at PIR within
+   minutes; Cloudflare and Google DoH both return `AD: true` on
+   queries to the zone, confirming the chain of trust validates.
 10. **Cancel WordPress.com Professional Email** — only now. The
     Titan mailbox stops receiving when WP.com cancels the
     subscription; verify Zoho is the only inbound path before

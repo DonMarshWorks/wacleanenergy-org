@@ -1,92 +1,91 @@
 # Implementation Hand-off
 
-**Last updated:** 2026-05-23
+**Last updated:** 2026-05-23 (late session — Phase 4 closeout)
 
-**Outgoing session:** The migration is now fully complete and a
-substantial session of site-side polish landed alongside.
-Migration-side: Phase 5 (registrar transfer to Cloudflare) executed
-this session; HSTS enabled at the Cloudflare zone level; Cloudflare
-Web Analytics enabled for the Pages project (CSP pre-widened to
-permit the beacon); WordPress.com account itself deleted, closing
-out Phase 4.10 implicitly and ending the WordPress.com chapter
-entirely. Site-side: an optional advocacy `outcome` field was added
-to the news collection (status badge on the index card, colored
-callout on the post page) and 12 of 14 posts now carry a real
-outcome. Footer copyright simplified ("all-volunteer nonprofit"
-dropped — the coalition isn't a registered 501(c)(3)). A
-`public/_headers` file with security headers was added and an
-accessibility pass fixed contrast, ambiguous link text, and
-reduced-motion handling.
+**Outgoing session:** Closed out the remaining Phase 4 migration
+tidies in one short Cloudflare-dashboard pass. SPF narrowed to
+Zoho-only (4.4), `rua=` reporting address added to DMARC as step 1
+of the eventual `p=` tightening (4.5), dead `_domainconnect` TXT
+deleted (4.7) along with the orphan `titan1._domainkey` Titan DKIM
+record (bonus tidy spotted in the dashboard), and DNSSEC enabled at
+Cloudflare with PIR confirming the DS within minutes (4.9). The DNS
+migration plan now has nothing material left open — only DMARC step 2
+(`p=quarantine`) remains, and that's a ~2-week observation step, not
+a session-bounded action.
 
 ---
 
 ## Shipped this session
 
-### In repo (committed)
+### In repo (committed in this session's commit)
 
-- **News: advocacy-outcome tracking** (`7a381f4`). Optional
-  frontmatter `outcome` block with `status: win | setback | mixed |
-  pending`, `text`, optional `date`. Shared `Outcome.astro` component
-  renders a status badge + one-line summary on the index card and a
-  bordered colored callout on the post page. Two new theme tokens
-  (`--color-success` green, `--color-pending` steel blue) added to
-  `global.css`. The 12 posts with concluded results carry an
-  outcome; 2 had the block deleted (no result to report).
-- **Footer: drop "all-volunteer nonprofit"** (`ef293aa`).
-- **Security headers + accessibility** (`ec989c8`).
-  `public/_headers` adds CSP / X-Frame-Options DENY / nosniff /
-  Referrer-Policy / Permissions-Policy. Contrast: nine
-  `text-ink/{60,70,75}` muted-text spots → `text-ink/85` (now ≥5:1
-  on cream, passes AA). Per-post `aria-label` on news "Read more"
-  links to disambiguate. `prefers-reduced-motion` now disables
-  `scroll-behavior: smooth`.
-- **CSP widened for Cloudflare Web Analytics** (`5965f9f`). Added
-  `static.cloudflareinsights.com` to `script-src` and a
-  `connect-src 'self' cloudflareinsights.com` directive.
-- **Migration plan status update** (`6f5e034`, plus this commit's
-  Phase 4 tidy). Records Phase 2B / 3 / 4 / 5 completion.
-- **Handoff refresh** (this commit).
+- **Plan + handoff doc updates only.** No code changes. The Phase 4
+  status block in `docs/plans/dns-email-migration.md` was rewritten
+  to "done"; the individual step entries (4.4, 4.5, 4.7, 4.9) carry
+  inline `**Done 2026-05-23**` annotations with the specifics
+  (record values, DS key tag and digest, etc.).
 
-### Outside repo (dashboards / external)
+### Outside repo (Cloudflare zone changes)
 
-- **Phase 5 — registrar transferred.** `wacleanenergy.org` moved
-  from Automattic Inc. (IANA 1531) to Cloudflare, Inc. (IANA 1910)
-  at 2026-05-23 23:13 UTC. Confirmed via RDAP at the `.org`
-  registry. Expiration extended to 2027-12-18 as part of the
-  transfer. ICANN 60-day post-transfer lock runs until ~2026-07-22;
-  Cloudflare's `clientTransferProhibited` registrar lock applied
-  automatically. Auth/EPP code discarded.
-- **HSTS** enabled at the Cloudflare zone level (SSL/TLS > Edge
-  Certificates). Max-age 6 months, no `includeSubDomains`, no
-  preload — safe starting posture.
-- **Cloudflare Web Analytics** enabled for the Pages project.
-- **WordPress.com account deleted.** Closes out Phase 4.10
-  (Professional Email cancellation); also makes Phase 4.8 (delta
-  migration from Titan) moot.
+All edits via Cloudflare dashboard → wacleanenergy.org → DNS:
+
+- **4.4 SPF narrowed.** Apex `TXT` changed from
+  `v=spf1 include:zohomail.com include:spf.titan.email ~all`
+  to `v=spf1 include:zohomail.com ~all`. Verified via Cloudflare DoH.
+- **4.5 step 1 DMARC `rua=` added.** `_dmarc TXT` now reads
+  `v=DMARC1;p=none;sp=none;adkim=r;aspf=r;pct=100;rua=mailto:info@wacleanenergy.org`.
+  `p=none` retained. Verified via Cloudflare DoH.
+- **4.7 `_domainconnect` TXT deleted.** The WordPress.com carryover
+  (`public-api.wordpress.com/rest/v1.3/domain-connect`) is gone.
+- **Bonus: `titan1._domainkey` TXT deleted.** Titan's DKIM public
+  key, dead since the WordPress.com / Titan account closure. Spotted
+  while reviewing the zone for the `_domainconnect` cleanup. Verified
+  removed via Cloudflare DoH (NOERROR + empty Answer + zone SOA).
+- **4.9 DNSSEC enabled.** Cloudflare signed the zone (DNSKEY records
+  published) and pushed the DS to PIR automatically (Cloudflare is
+  also the registrar). PIR published the DS within minutes:
+  `2371 13 2 674F99ED8B98767A63CF2DAAD36BBE94469999242441ADD2315A1241F8F02A79`
+  (key tag 2371, algorithm 13 ECDSAP256SHA256, digest type 2 SHA-256).
+  Both Cloudflare and Google DoH now return `AD: true` on queries to
+  the zone, confirming the chain of trust validates end-to-end.
+
+### Notes on stale DoH responses observed during the session
+
+- The pre-edit `_domainconnect` lookup returned a value
+  (`api.cloudflare.com/client/v4/dns/domainconnect`) that didn't
+  match what the dashboard showed (`public-api.wordpress.com/...`) —
+  Don checked the dashboard and confirmed only the WordPress.com
+  record existed. The DoH answer was an upstream-cached entry from
+  an earlier zone state. The `_domainconnect` TXT continued to
+  resolve in DoH even after deletion for the duration of its 3600s
+  TTL — expected, not a problem.
+- All TXT records that were edited (SPF, DMARC) had 300s TTL and
+  reflected the new value in DoH within ~1 minute of the dashboard
+  save.
 
 ## Quality gates
 
-Lint clean, 7/7 tests passing, `npm run build` emits 21 static
-pages (home + three inner pages + contact + 404 + `/rss.xml` +
-sitemap + 14 news posts + a 2-page paginated `/news` index).
+No code touched; lint / test / build state unchanged from previous
+session (lint clean, 7/7 tests passing, build emits 21 static pages).
 
 ## Cumulative state
 
-### Stack (post-migration)
+### Stack (post-migration, post-tidy)
 
 - **Domain:** `wacleanenergy.org`, registered at **Cloudflare
   Registrar**, expires 2027-12-18. Lock on, auto-renew on, WHOIS
   privacy on.
 - **DNS:** Cloudflare zone, nameservers
   `benedict.ns.cloudflare.com` / `sonia.ns.cloudflare.com`.
+  **DNSSEC live** (DS at PIR; `AD: true` on validating resolvers).
 - **Web:** Cloudflare Pages project `wacleanenergy-org`,
-  auto-deploys from `main`. Apex + `www` serve the new Astro site
-  over HTTPS with HSTS. `*.pages.dev` preview URL also remains.
+  auto-deploys from `main`. Apex + `www` serve the Astro site over
+  HTTPS with HSTS. `*.pages.dev` preview URL also remains.
 - **Email:** Zoho Mail Lite, single mailbox
-  `info@wacleanenergy.org`. SPF currently the transitional merged
-  record (Zoho + Titan); narrowing to Zoho-only is a pending tidy
-  but no longer urgent — Titan can't send anyway, account is gone.
-  DKIM signed by Zoho. DMARC `p=none`.
+  `info@wacleanenergy.org`. SPF is now Zoho-only
+  (`v=spf1 include:zohomail.com ~all`). DKIM signed by Zoho via
+  `zmail._domainkey`. DMARC `p=none` with
+  `rua=mailto:info@wacleanenergy.org`.
 - **Analytics:** Cloudflare Web Analytics enabled for the Pages
   project; CSP allows the beacon (see `public/_headers`).
 - **Cost (annual):** ~$22 = $10.13 Cloudflare Registrar +
@@ -130,6 +129,7 @@ sitemap + 14 news posts + a 2-page paginated `/news` index).
 ## Recent commits
 
 ```
+05fe556  Handoff refresh + close out Phase 4.10 / 4.8
 6f5e034  Plans: record Phase 2B / 3 / 4 / 5 completion of the DNS migration
 5965f9f  Widen CSP to allow Cloudflare Web Analytics beacon
 ec989c8  Add security headers and fix accessibility issues
@@ -139,31 +139,26 @@ d34d620  Plans: record Phase 2A completion of the DNS migration
 c3ca797  Plans: rewrite DNS migration around the real WordPress.com stack
 0e658fd  Handoff: refresh for end of 2026-05-21 polish + news session
 f59a25c  News: backfill fourteen real posts from coalition's filing archive
-c30abc7  Polish: heading font, footer nav, social card, favicon, lead paragraph
 ```
 
-(This session's handoff + plan tidy commit lands on top.)
+(This session's tidy-closeout commit lands on top.)
 
 ## Incoming session options
 
-The migration and the major site work are both done. Remaining items
-are small tidies and ongoing content work.
+The migration is now fully done — no Phase 4 items remain except the
+multi-week DMARC observation. Remaining items are small tidies,
+post-launch hardening, and ongoing content work.
 
-### Migration follow-on tidies (small, do whenever)
+### Migration follow-on (one item left, week-scale)
 
-- **4.4 Narrow SPF to Zoho-only.** Replace
-  `v=spf1 include:zohomail.com include:spf.titan.email ~all` with
-  `v=spf1 include:zohomail.com ~all`. Safe to do now (Titan is
-  gone).
-- **4.5 Tighten DMARC.** Currently `p=none`. If a `rua=` mailbox is
-  added and reports come back clean, step to `p=quarantine`, later
-  `p=reject`.
-- **4.7 Drop dead `_domainconnect` `TXT`** from the Cloudflare
-  zone — carried over verbatim from WordPress.com, inert now.
-- **4.9 Enable DNSSEC at Cloudflare.** Deferred during the Phase 5
-  transfer window. One-click in the Cloudflare DNS panel now that
-  Cloudflare controls DNS *and* registrar; `DS` is published to PIR
-  automatically.
+- **4.5 step 2 — Tighten DMARC.** Watch the `info@` mailbox for
+  aggregate (`rua`) reports over the next 1–2 weeks. Reports are
+  XML, typically a small daily volume from large mailbox providers
+  (Google, Microsoft, Yahoo). Once all observed sending sources are
+  Zoho-aligned with no surprises, step `p=none` → `p=quarantine`;
+  observe another 1–2 weeks; then `p=reject`. Optionally set up a
+  free DMARC parsing service (Postmark, dmarcian) if the raw XML is
+  unpleasant to skim.
 
 ### Post-launch hardening / ops
 
@@ -173,6 +168,8 @@ are small tidies and ongoing content work.
   site.
 - **Email deliverability test.** Send from `info@wacleanenergy.org`
   to mail-tester.com (or similar). Tighten what the score flags.
+  Now that SPF is Zoho-only and DNSSEC is on, the score should be
+  cleaner than it would have been a session ago.
 
 ### Content
 
