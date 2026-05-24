@@ -1,33 +1,50 @@
 # Implementation Hand-off
 
-**Last updated:** 2026-05-23 (late session — Phase 4 closeout)
+**Last updated:** 2026-05-23 (late session — Phase 4 closeout + GSC/Bing)
 
-**Outgoing session:** Closed out the remaining Phase 4 migration
-tidies in one short Cloudflare-dashboard pass. SPF narrowed to
-Zoho-only (4.4), `rua=` reporting address added to DMARC as step 1
-of the eventual `p=` tightening (4.5), dead `_domainconnect` TXT
-deleted (4.7) along with the orphan `titan1._domainkey` Titan DKIM
-record (bonus tidy spotted in the dashboard), and DNSSEC enabled at
-Cloudflare with PIR confirming the DS within minutes (4.9). The DNS
-migration plan now has nothing material left open — only DMARC step 2
-(`p=quarantine`) remains, and that's a ~2-week observation step, not
-a session-bounded action.
+**Outgoing session:** Two unrelated chunks of work.
+**(1) Phase 4 migration tidies** closed out in one short
+Cloudflare-dashboard pass: SPF narrowed to Zoho-only (4.4), `rua=`
+reporting address added to DMARC as step 1 of the eventual `p=`
+tightening (4.5), dead `_domainconnect` TXT deleted (4.7) along
+with the orphan `titan1._domainkey` Titan DKIM record (bonus tidy
+spotted in the dashboard), and DNSSEC enabled at Cloudflare with
+PIR confirming the DS within minutes (4.9). The DNS migration plan
+now has nothing material left open — only DMARC step 2
+(`p=quarantine`) remains, and that's a ~2-week observation step.
+**(2) Search Console setup**: the 14 news-asset PDFs were added to
+the sitemap via `customPages` (Astro's sitemap integration only
+enumerates routed pages by default), then Google Search Console
+and Bing Webmaster Tools were both verified and the
+`sitemap-index.xml` was submitted to each. Initial status in both
+is "processing"/"couldn't fetch (queued)" — expect both to resolve
+to Success within hours to a day.
 
 ---
 
 ## Shipped this session
 
-### In repo (committed in this session's commit)
+### In repo (committed in this session)
 
-- **Plan + handoff doc updates only.** No code changes. The Phase 4
-  status block in `docs/plans/dns-email-migration.md` was rewritten
-  to "done"; the individual step entries (4.4, 4.5, 4.7, 4.9) carry
-  inline `**Done 2026-05-23**` annotations with the specifics
-  (record values, DS key tag and digest, etc.).
+- **Plan + handoff doc updates** (`c741541`). Phase 4 status block
+  in `docs/plans/dns-email-migration.md` rewritten to "done"; the
+  individual step entries (4.4, 4.5, 4.7, 4.9) carry inline
+  `**Done 2026-05-23**` annotations with the specifics (record
+  values, DS key tag and digest, etc.).
+- **Sitemap: include linked /news-assets PDFs** (`2929eb4`).
+  `astro.config.mjs` enumerates `public/news-assets/*.pdf` at
+  config load and passes the URLs through `@astrojs/sitemap`'s
+  `customPages` option. The deployed `/sitemap-0.xml` now contains
+  the 20 routed pages **plus** the 14 PDFs. New PDFs auto-include
+  on next build — no config edits required.
+- **Add Bing Webmaster verification file** (`7d8bb92`).
+  `public/BingSiteAuth.xml` with the verification token Bing
+  generated. Lives in `public/` so Cloudflare Pages serves it at
+  the site root.
 
-### Outside repo (Cloudflare zone changes)
+### Outside repo
 
-All edits via Cloudflare dashboard → wacleanenergy.org → DNS:
+**Cloudflare DNS zone changes** (dashboard → wacleanenergy.org → DNS):
 
 - **4.4 SPF narrowed.** Apex `TXT` changed from
   `v=spf1 include:zohomail.com include:spf.titan.email ~all`
@@ -48,6 +65,38 @@ All edits via Cloudflare dashboard → wacleanenergy.org → DNS:
   (key tag 2371, algorithm 13 ECDSAP256SHA256, digest type 2 SHA-256).
   Both Cloudflare and Google DoH now return `AD: true` on queries to
   the zone, confirming the chain of trust validates end-to-end.
+- **Google Search Console verification TXT** at the apex:
+  `google-site-verification=BN6SF7cYoCXI5hryvt_OsVr55urYgvQl7MA_XChI1xQ`.
+  Added manually to keep verification under direct DNS control;
+  Google's "Authorize Cloudflare to remove records" Domain Connect
+  prompt was declined since the manual TXT already satisfied
+  verification. The TXT must remain present to retain ownership
+  verification (GSC re-checks periodically).
+
+**Google Search Console + Bing Webmaster setup:**
+
+- **GSC**: Domain property `wacleanenergy.org` verified via the apex
+  TXT above. `sitemap-index.xml` submitted and accepted —
+  initial "Couldn't fetch" placeholder cleared to **Success** before
+  the session ended.
+- **Bing**: site `https://wacleanenergy.org` verified via the
+  `BingSiteAuth.xml` token committed to the repo. GSC import path
+  didn't find the freshly-verified GSC property (Bing's import lags
+  GSC verification by some minutes/hours), so manual file
+  verification was used instead. `sitemap-index.xml` submitted and
+  cleared to **Success** in the same session.
+- **Note on the Cloudflare-Connect prompt during GSC verification:**
+  When Google detected Cloudflare nameservers it offered a "one-time
+  authorization" flow (titled "Authorize DNS records from Google")
+  that would have had Cloudflare delete the manually-added TXT and
+  re-add an identical TXT with a longer TTL. Net effect was a no-op,
+  but the wording ("may result in downtime") was unnecessarily
+  alarming and the integration adds a third-party DNS write grant we
+  didn't need. The prompt was cancelled; cancelling the dialog still
+  left the manual TXT in place, and the underlying GSC verification
+  succeeded on the next attempt without any further interaction.
+  Recommendation if re-verifying in the future: stay on the manual
+  TXT path and decline the Cloudflare-Connect offer.
 
 ### Notes on stale DoH responses observed during the session
 
@@ -65,8 +114,8 @@ All edits via Cloudflare dashboard → wacleanenergy.org → DNS:
 
 ## Quality gates
 
-No code touched; lint / test / build state unchanged from previous
-session (lint clean, 7/7 tests passing, build emits 21 static pages).
+Lint clean, 7/7 tests passing, `npm run build` emits 21 static pages.
+`/sitemap-0.xml` now contains 34 URLs (20 routed pages + 14 PDFs).
 
 ## Cumulative state
 
@@ -88,6 +137,12 @@ session (lint clean, 7/7 tests passing, build emits 21 static pages).
   `rua=mailto:info@wacleanenergy.org`.
 - **Analytics:** Cloudflare Web Analytics enabled for the Pages
   project; CSP allows the beacon (see `public/_headers`).
+- **Search indexing:** Submitted to Google Search Console (Domain
+  property, DNS-TXT verified) and Bing Webmaster Tools (URL prefix,
+  XML-file verified). Both report sitemap status "Success".
+  Sitemap includes 14 `/news-assets/*.pdf` URLs via Astro sitemap
+  `customPages` so the linked filing archive gets explicit indexing
+  signal, not just link-graph discovery from news posts.
 - **Cost (annual):** ~$22 = $10.13 Cloudflare Registrar +
   $12 Zoho Mail Lite.
 - **All accounts** (GitHub, Cloudflare, Zoho) currently personal
@@ -129,6 +184,9 @@ session (lint clean, 7/7 tests passing, build emits 21 static pages).
 ## Recent commits
 
 ```
+7d8bb92  Add Bing Webmaster verification file
+2929eb4  Sitemap: include linked /news-assets PDFs
+c741541  Plans: close out Phase 4 migration tidies
 05fe556  Handoff refresh + close out Phase 4.10 / 4.8
 6f5e034  Plans: record Phase 2B / 3 / 4 / 5 completion of the DNS migration
 5965f9f  Widen CSP to allow Cloudflare Web Analytics beacon
@@ -136,12 +194,9 @@ ec989c8  Add security headers and fix accessibility issues
 7a381f4  News: add advocacy-outcome tracking to posts
 ef293aa  Footer: drop the "all-volunteer nonprofit" descriptor
 d34d620  Plans: record Phase 2A completion of the DNS migration
-c3ca797  Plans: rewrite DNS migration around the real WordPress.com stack
-0e658fd  Handoff: refresh for end of 2026-05-21 polish + news session
-f59a25c  News: backfill fourteen real posts from coalition's filing archive
 ```
 
-(This session's tidy-closeout commit lands on top.)
+(This session's handoff-refresh commit lands on top.)
 
 ## Incoming session options
 
@@ -162,14 +217,16 @@ post-launch hardening, and ongoing content work.
 
 ### Post-launch hardening / ops
 
-- **Google Search Console + Bing Webmaster.** Verify ownership (DNS
-  TXT or HTML file in `public/`), submit `/sitemap-index.xml`.
-  Highest-leverage SEO step now that the live site is the new Astro
-  site.
 - **Email deliverability test.** Send from `info@wacleanenergy.org`
   to mail-tester.com (or similar). Tighten what the score flags.
   Now that SPF is Zoho-only and DNSSEC is on, the score should be
   cleaner than it would have been a session ago.
+- **Watch GSC / Bing reports.** No action needed soon — both are
+  set up and the sitemap was accepted. Worth opening GSC's
+  *Performance* and *Indexing > Pages* views after a week or two to
+  see what's getting crawled and surfaced; same with Bing's
+  *Search Performance* and *Site Explorer*. If anything important
+  is excluded, GSC's *URL Inspection* tool will say why.
 
 ### Content
 
