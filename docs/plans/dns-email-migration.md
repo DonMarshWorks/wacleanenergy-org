@@ -43,11 +43,25 @@ and the zone inventory confirmed complete (Phase 0 #1)._
 - **Phase 4 — done** (closed out 2026-05-23, after this session's
   tidies landed). Cutover gate (site over HTTPS, send/receive on Zoho
   with SPF + DKIM aligned) was green earlier. **4.10** (Professional
-  Email cancellation) closed out implicitly when the WordPress.com
-  account itself was deleted; **4.8** (final delta migration from
-  Titan) is moot for the same reason — any mail that landed in Titan
-  during the brief MX-propagation tail and wasn't pulled by the
-  initial bulk migration is unrecoverable. **4.4** SPF narrowed to
+  Email cancellation) is operationally closed — the WP.com reseller
+  relationship for Professional Email ended when the WP.com account
+  itself was deleted, and the underlying Titan mailbox receives no
+  mail (MX has been at Zoho since Phase 3) and is unloggable (no
+  Titan login exists outside the deleted WP.com relationship).
+  **However**, Titan's own backend record of the mailbox didn't get
+  cleaned up: on 2026-05-24 Titan sent a "no admin assigned" notice
+  to `info@wacleanenergy.org` (delivered to Zoho, where it now
+  goes), saying they will auto-assign admin to that mailbox on
+  2026-06-15 if none is set. This is metadata-only and harmless
+  (the mailbox still can't be logged into and still receives no
+  mail), but the "closed out implicitly" assumption from 2026-05-23
+  was overconfident — Titan keeps a zombie record of the account
+  even though the reseller link is severed. Plan: reply to Titan
+  asking them to close the orphan account; set a Zoho filter to
+  auto-archive any future Titan correspondence; otherwise ignore.
+  **4.8** (final delta migration from Titan) remains moot — any
+  mail that landed in Titan during the brief MX-propagation tail
+  and wasn't pulled by the initial bulk migration is unrecoverable. **4.4** SPF narrowed to
   `v=spf1 include:zohomail.com ~all` (Titan include removed). **4.5
   step 1** done: `rua=mailto:info@wacleanenergy.org` added to the
   `_dmarc` `TXT`; `p=none` retained pending ~2 weeks of aggregate
@@ -492,7 +506,18 @@ verified (Phase 0 #7).
 10. **Cancel WordPress.com Professional Email** — only now. The
     Titan mailbox stops receiving when WP.com cancels the
     subscription; verify Zoho is the only inbound path before
-    cancelling. Restore normal TTLs (Phase 0 #4).
+    cancelling. Restore normal TTLs (Phase 0 #4). **Note from
+    2026-05-24:** cancelling Professional Email at WordPress.com
+    (or deleting the WP.com account outright, as happened here)
+    severs the reseller billing relationship with Titan but
+    **does not** delete the underlying Titan mailbox record.
+    Titan keeps a zombie account that can't receive mail (MX has
+    been re-pointed) and can't be logged into (no Titan login
+    exists outside the WP.com relationship), but their backend
+    will continue to send housekeeping notices to the address
+    (now delivered to Zoho). Either reply asking Titan to close
+    the orphan account explicitly, or just filter their mail —
+    the account is functionally inert either way.
 11. Monitor ~24–48h before Phase 5.
 
 ### Phase 5 — Registrar transfer (optional, deferred)

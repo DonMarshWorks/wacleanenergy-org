@@ -1,6 +1,6 @@
 # Implementation Hand-off
 
-**Last updated:** 2026-05-23 (late session — Phase 4 closeout + GSC/Bing)
+**Last updated:** 2026-05-24 (Titan-straggler addendum + first DMARC report)
 
 **Outgoing session:** Two unrelated chunks of work.
 **(1) Phase 4 migration tidies** closed out in one short
@@ -9,9 +9,10 @@ reporting address added to DMARC as step 1 of the eventual `p=`
 tightening (4.5), dead `_domainconnect` TXT deleted (4.7) along
 with the orphan `titan1._domainkey` Titan DKIM record (bonus tidy
 spotted in the dashboard), and DNSSEC enabled at Cloudflare with
-PIR confirming the DS within minutes (4.9). The DNS migration plan
-now has nothing material left open — only DMARC step 2
-(`p=quarantine`) remains, and that's a ~2-week observation step.
+PIR confirming the DS within minutes (4.9). Only DMARC step 2
+(`p=quarantine`) and a Titan-side zombie account remain (see the
+2026-05-24 addendum below) — both are slow-burn items, not
+session-bounded actions.
 **(2) Search Console setup**: the 14 news-asset PDFs were added to
 the sitemap via `customPages` (Astro's sitemap integration only
 enumerates routed pages by default), then Google Search Console
@@ -96,6 +97,32 @@ best practice is 2048-bit. Not a deliverability blocker — major
 providers still accept 1024-bit — but if a future session wants
 maximum-strength auth, regenerate in Zoho Mail Admin → Domains →
 DKIM at 2048-bit and update the `zmail._domainkey` TXT.
+
+### Post-session discoveries (2026-05-24)
+
+- **First DMARC aggregate report received** from Outlook.com,
+  covering 2026-05-22. One message in the window: an email sent
+  from `info@wacleanenergy.org` got forwarded through Gmail to a
+  Hotmail recipient. DKIM aligned and passed (signed by Zoho with
+  selector `zmail`); SPF didn't align (forwarder rewrote the
+  envelope to a `gmail.com` address) but that's the textbook
+  SPF-breaks-on-forwarding case DMARC was designed to absorb.
+  Overall DMARC: pass. No spoofing — DKIM signature can't be forged.
+- **Titan zombie account discovered.** On 2026-05-24, Titan sent a
+  "no admin assigned" housekeeping notice to
+  `info@wacleanenergy.org` (delivered to Zoho), warning that on
+  2026-06-15 they'll auto-assign admin to that mailbox if none is
+  set. This contradicts our 2026-05-23 assumption that 4.10 was
+  "closed out implicitly" when the WP.com account was deleted —
+  WP.com's deletion ended the reseller billing relationship but
+  did **not** delete the underlying Titan mailbox record. Titan
+  keeps a zombie account that can't receive mail (MX at Zoho) and
+  can't be logged into (no Titan login exists outside the WP.com
+  relationship), but their backend will continue to emit
+  housekeeping notices to the address. The plan/HANDOFF entries
+  for 4.10 are updated to reflect this. No urgent action — reply
+  to Titan asking them to close the orphan if/when convenient,
+  and set a Zoho filter on Titan correspondence.
 - **Note on the Cloudflare-Connect prompt during GSC verification:**
   When Google detected Cloudflare nameservers it offered a "one-time
   authorization" flow (titled "Authorize DNS records from Google")
