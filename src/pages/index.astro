@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import HomeFeature from "../components/HomeFeature.astro";
 import { Content } from "../content/pages/home.mdx";
 ---
 
@@ -18,6 +19,13 @@ import { Content } from "../content/pages/home.mdx";
     <div class="post-body mt-8">
       <Content />
     </div>
+    <HomeFeature
+      eyebrow="What we're working on"
+      title="WCEC responds to PSE's 2027 Integrated System Plan"
+      body="PSE's preliminary plan would make natural gas the single largest source of new electricity through 2050 — more than wind and solar combined. Our policy briefing lays out a better path: use the resources we already own, upgrade the grid we have today, and trim the gas system fairly."
+      href="/news/2026-06-pse-2027-isp-response/"
+      linkText="Read our response"
+    />
     <div class="mt-8 flex flex-wrap gap-4">
       <a
         href="/what-we-do"
