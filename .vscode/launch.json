@@ -1,0 +1,42 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "⭐ Debug WCEC site",
+      "configurations": [
+        "🚫 [Internal] Astro Dev",
+        "🚫 [Internal] Chrome Frontend"
+      ],
+      "stopAll": true,
+      "preLaunchTask": "Cleanup Servers",
+      "postDebugTask": "Cleanup Servers"
+    }
+  ],
+  "configurations": [
+    {
+      "name": "🚫 [Internal] Astro Dev",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "🚫 [Internal] Chrome Frontend",
+      "type": "chrome",
+      "request": "launch",
+      "url": "http://localhost:4321",
+      "webRoot": "${workspaceFolder}/src",
+      "sourceMaps": true,
+      "sourceMapPathOverrides": {
+        "/src/*": "${webRoot}/*",
+        "src/*": "${webRoot}/*"
+      },
+      "userDataDir": "${workspaceFolder}/.vscode/chrome-debug-profile",
+      "runtimeArgs": ["--start-maximized", "--auto-open-devtools-for-tabs"],
+      "preLaunchTask": "Wait for Dev Server"
+    }
+  ]
+}

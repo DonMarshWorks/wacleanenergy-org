@@ -1,0 +1,45 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Cleanup Servers",
+      "type": "shell",
+      "command": "${workspaceFolder}/.vscode/cleanup_servers.bat",
+      "windows": {
+        "command": "${workspaceFolder}\\.vscode\\cleanup_servers.bat",
+        "options": {
+          "shell": {
+            "executable": "cmd.exe",
+            "args": ["/c"]
+          }
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "close": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Wait for Dev Server",
+      "type": "shell",
+      "command": "${workspaceFolder}/.vscode/wait_for_server.bat",
+      "windows": {
+        "command": "${workspaceFolder}\\.vscode\\wait_for_server.bat",
+        "options": {
+          "shell": {
+            "executable": "cmd.exe",
+            "args": ["/c"]
+          }
+        }
+      },
+      "presentation": {
+        "reveal": "silent",
+        "panel": "shared",
+        "close": true
+      },
+      "problemMatcher": []
+    }
+  ]
+}
