@@ -17,9 +17,37 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+const siteName = "Washington Clean Energy Coalition";
+const canonical = new URL(`/news/${post.id}/`, Astro.site).toString();
+const isoPubDate = post.data.pubDate.toISOString();
+const orgUrl = new URL("/", Astro.site).toString();
+const logoUrl = new URL("/favicon.svg", Astro.site).toString();
+const imageUrl = new URL("/og.png", Astro.site).toString();
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "NewsArticle",
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: isoPubDate,
+  dateModified: isoPubDate,
+  author: { "@type": "Organization", name: siteName, url: orgUrl },
+  publisher: {
+    "@type": "Organization",
+    name: siteName,
+    logo: { "@type": "ImageObject", url: logoUrl },
+  },
+  image: imageUrl,
+};
 ---
 
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout
+  title={post.data.title}
+  description={post.data.description}
+  structuredData={structuredData}
+>
   <article class="mx-auto max-w-3xl px-6 py-14">
     <p class="text-sm text-ink/85">
       <time datetime={post.data.pubDate.toISOString()}

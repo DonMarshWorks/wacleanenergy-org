@@ -6,9 +6,10 @@ import Footer from "../components/Footer.astro";
 interface Props {
   title: string;
   description?: string;
+  structuredData?: Record<string, unknown>;
 }
 
-const { title, description = "" } = Astro.props;
+const { title, description = "", structuredData } = Astro.props;
 
 const siteName = "Washington Clean Energy Coalition";
 const pageTitle = title === siteName ? title : `${title} — ${siteName}`;
@@ -42,6 +43,15 @@ const ogImage = new URL("/og.png", Astro.site).toString();
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:image" content={ogImage} />
+    {
+      structuredData && (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(structuredData)}
+        />
+      )
+    }
   </head>
   <body class="flex min-h-screen flex-col bg-surface text-ink antialiased">
     <a
