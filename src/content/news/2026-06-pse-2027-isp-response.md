@@ -1,13 +1,14 @@
 ---
 title: WCEC responds to Puget Sound Energy's 2027 Integrated System Plan
-pubDate: 2026-06-03
+pubDate: 2026-06-20
 description: >-
-  WCEC's policy briefing "A Better Plan" responds to Puget Sound
-  Energy's (PSE) preliminary 2027 Integrated System Plan (ISP) — the
-  utility's long-range resource plan — in which natural gas is the
-  single largest source of new electricity through 2050. The briefing
-  lays out a three-part alternative: use the resources we already own,
-  upgrade the grid we have today, and trim the gas system fairly.
+  PSE's preliminary 2027 Integrated System Plan (ISP) would build 20
+  new gas plants and an unproven nuclear plant while leaving its gas
+  system largely unchanged — incurring billions in pollution fees that
+  PSE expects to pass on to customers through higher bills. WCEC
+  proposes a diversified clean portfolio that cuts emissions, lowers
+  customer bills, reduces risk, and delivers a more equitable future
+  for all.
 tags:
   - pse
   - isp
@@ -20,22 +21,19 @@ outcome:
 
 On May 28, 2026, Puget Sound Energy (PSE) presented the starting
 point for its first combined gas-and-electric Integrated System Plan
-(ISP). The ISP is PSE's long-range resource plan, succeeding the
-separate Integrated Resource Plans (IRPs) the company previously
-filed for electric and gas. In the preliminary portfolio, natural gas
-is the single largest source of new electric capacity through 2050 —
-more than the company's planned wind and solar combined. WCEC's
-policy briefing, *A Better Plan for Washington's Energy Future*,
-explains why this direction violates the intent of Washington's clean
-energy laws and offers a different path.
+(ISP). 
 
-- Gas is the single largest source of new electric capacity in PSE's
-  recommended portfolio through 2050 — more than wind and solar
-  combined.
-- PSE's projections show gas rates rising 392% and electric rates up 142%
-  by 2050, potentially punishing renters and low-income families with skyrocketing bills to maintain an under-utilized gas system.
-- A better plan enhances PSE's existing
-  Virtual Power Plant, upgrades wires on existing transmission lines,
-  and avoids risky and expensive new nuclear reactors.
+- PSE proposes to build **20 gas-powered plants and an unproven
+  nuclear plant** to serve growing demand for electricity. For its gas
+  system, PSE expects little change. But that would incur billions of
+  dollars of pollution fees that PSE expects to pass onto customers
+  through higher energy bills. 
 
-<a href="/news-assets/2026-06-pse-2027-isp-response.pdf" target="_blank" rel="noopener">Read the full document (PDF)</a>
+- We propose that a **diversified clean
+  portfolio** will reduce emissions dramatically, lower customer bills,
+  lessen risk, and provide a more equitable future for all.
+
+
+**Start here:** <a href="/news-assets/2026-06-pse-2027-isp-summary.pdf" target="_blank" rel="noopener">Read the summary (PDF)</a> — a short overview of our better plan for PSE.
+
+Want the complete analysis? Read our <a href="/news-assets/2026-06-pse-2027-isp-portfolio.pdf" target="_blank" rel="noopener">full clean energy portfolio for PSE's 2027 ISP (28-page PDF)</a>.
